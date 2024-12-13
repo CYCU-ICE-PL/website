@@ -2,7 +2,14 @@
 
 PL 可視化是一個基於 Quasar 和 Vue 的應用，用於程式語言的可視化和執行追蹤。
 
-## 先決條件
+## 開發流程
+1. 在 `main` branch 上創建新的分支
+2. 在新分支上進行開發
+3. 開發完成後，發起 Pull Request
+4. 確認無問題後，合併到 `main` branch
+5. GitHub Action 會自動構建並部署到 GitHub Pages (gh-pages branch)
+
+## 使用套件
 * node: v20.18.1
 * npm: 7.6.3
 

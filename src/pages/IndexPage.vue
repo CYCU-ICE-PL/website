@@ -79,7 +79,7 @@ const executing = ref(false)
 const dialogVisible = ref(false)
 const parseTree = ref('')
 
-const interpreterOptions = ['OurScheme'] //, 'OurC'] 
+const interpreterOptions = ['OurScheme'] //, 'OurC']  // 可以添加更多的Interpreter文法
 
 const executeCode = (sendMessage) => {
   if (!interpreterType.value) {

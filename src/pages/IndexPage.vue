@@ -62,7 +62,7 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import TextArea from 'components/TextArea.vue'
-import WebSocketComponent from 'components/WebSocketComponent.vue'
+import WebSocketComponent from 'components/WebsocketComponent.vue'
 import ParseTree from 'components/ParseTree.vue'
 import axios from 'axios'
 

@@ -26,5 +26,9 @@ const isDark = ref($q.dark.isActive)
 const toggleTheme = () => {
   $q.dark.toggle()
   isDark.value = $q.dark.isActive
+  gtag('event', 'toggle_theme', {
+    event_category: 'Theme',
+    event_label: isDark.value ? 'Dark Mode' : 'Light Mode',
+  })
 }
 </script>

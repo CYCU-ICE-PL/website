@@ -95,6 +95,10 @@ const executeCode = (sendMessage) => {
   }
   sendMessage(JSON.stringify(message))
   code.value = '' // 清空輸入程式碼
+  gtag('event', 'execute_code', {
+    event_category: 'Code Execution',
+    event_label: interpreterType.value,
+  })
   setTimeout(() => {
     executing.value = false
   }, 1000) // 模擬執行完成後的狀態變更
@@ -153,6 +157,10 @@ const sendPostRequest = async () => {
     })
     parseTree.value = response.data.parseTree
     dialogVisible.value = true
+    gtag('event', 'visualize_syntax_tree', {
+      event_category: 'Syntax Tree',
+      event_label: interpreterType.value,
+    })
   } catch (error) {
     console.error('Error sending POST request:', error)
     $q.notify({

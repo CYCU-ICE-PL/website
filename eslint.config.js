@@ -47,7 +47,8 @@ export default [
         cordova: 'readonly',
         Capacitor: 'readonly',
         chrome: 'readonly', // BEX related
-        browser: 'readonly' // BEX related
+        browser: 'readonly', // BEX related
+        gtag: 'readonly' // Google Analytics
       }
     },
 

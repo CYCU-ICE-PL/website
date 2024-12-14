@@ -49,6 +49,10 @@ const fetchRandomQuote = () => {
 onMounted(() => {
   fetchRandomMeme()
   fetchRandomQuote()
+  gtag('event', 'page_view', {
+    event_category: 'Error',
+    event_label: '404 Page'
+  })
 })
 </script>
 

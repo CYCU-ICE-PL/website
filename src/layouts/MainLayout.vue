@@ -2,7 +2,7 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated reveal>
       <q-toolbar>
-        <q-toolbar-title>
+        <q-toolbar-title class="title">
           PL
         </q-toolbar-title>
         <q-space />
@@ -32,3 +32,9 @@ const toggleTheme = () => {
   })
 }
 </script>
+
+<style scoped>
+.title {
+  font-size: 2rem; /* 設定字體大小 */
+}
+</style>

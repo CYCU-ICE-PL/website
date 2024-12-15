@@ -47,7 +47,7 @@
         </div>
       </div>
     </q-page>
-    <q-dialog v-model="dialogVisible">
+    <q-dialog v-model="dialogVisible" full-height full-width>
       <q-card flat>
         <ParseTree :parseTree="parseTree" />
         <q-card-actions align="right">
@@ -151,7 +151,8 @@ const handleDisconnected = () => {
 
 const sendPostRequest = async () => {
   try {
-    const response = await axios.post('http://localhost:7090/syntax-tree', {
+    const hostname = window.location.hostname
+    const response = await axios.post(`http://localhost:7090/syntax-tree`, {
       payload: code.value + '\n',
       interpreterType: interpreterType.value
     })

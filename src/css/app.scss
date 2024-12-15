@@ -7,7 +7,7 @@
 body {
   font-family: 'Nunito', sans-serif;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.2;
   color: #333;
 }
 
@@ -33,3 +33,16 @@ button {
   font-family: 'Nunito', sans-serif;
   font-weight: 600;
 }
+
+
+// 設定 Quasar 元素的字體大小
+
+textarea,
+.q-input,
+.q-spinner,
+.q-card,
+.q-card-section,
+.q-card-actions {
+  font-size: 1.2rem; // 調整這裡的數值來改變字體大小
+}
+

@@ -1,5 +1,6 @@
 <template>
     <div class="button-container">
+        <q-btn icon="download" flat round @click="exportSVG" class="export-btn" />
         <q-btn icon="fullscreen" flat round @click="toggleFullScreen" class="fullscreen-btn" />
     </div>
     <div ref="treeContainer" class="tree-container"></div>
@@ -23,7 +24,7 @@ const isFullScreen = ref(false);
 const drawTree = (data, width, height) => {
     if (!treeContainer.value) return; // 檢查 treeContainer 是否為 null
 
-    const minWidth = 513; // 最小寬度
+    const minWidth = 500; // 最小寬度
     const minHeight = 800; // 最小高度
 
     const containerWidth = Math.max(width || treeContainer.value.clientWidth, minWidth);
@@ -110,6 +111,23 @@ const toggleFullScreen = () => {
     }
 };
 
+const exportSVG = () => {
+    if (!svgRef.value) return;
+
+    const serializer = new XMLSerializer();
+    const source = serializer.serializeToString(svgRef.value);
+
+    const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'parse_tree.svg';
+    link.click();
+
+    URL.revokeObjectURL(url);
+};
+
 watch(
     () => props.parseTree,
     (newTree) => {
@@ -128,6 +146,5 @@ document.addEventListener('fullscreenchange', () => {
 .button-container {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 10px;
 }
 </style>

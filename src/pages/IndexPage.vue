@@ -151,7 +151,6 @@ const handleDisconnected = () => {
 
 const sendPostRequest = async () => {
   try {
-    const hostname = window.location.hostname
     const response = await axios.post(`http://localhost:7090/syntax-tree`, {
       payload: code.value + '\n',
       interpreterType: interpreterType.value

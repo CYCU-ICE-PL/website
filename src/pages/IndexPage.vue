@@ -155,6 +155,9 @@ const sendPostRequest = async () => {
       payload: code.value + '\n',
       interpreterType: interpreterType.value
     })
+    if (response.status !== 200) {
+      throw new Error('請檢查輸入是否正確')
+    }
     parseTree.value = response.data.parseTree
     dialogVisible.value = true
     gtag('event', 'visualize_syntax_tree', {
@@ -165,7 +168,7 @@ const sendPostRequest = async () => {
     console.error('Error sending POST request:', error)
     $q.notify({
       type: 'negative',
-      message: 'POST 請求失敗',
+      message: '可視化請求失敗',
       timeout: 1200,
       position: 'top',
       progress: true,

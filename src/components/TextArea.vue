@@ -2,7 +2,7 @@
   <q-card>
     <q-card-section class="tight-card-section">
       <div class="text-h6">{{ title }}</div>
-      <q-btn flat round icon="download" size = "sm" class="absolute-top-right q-mt-sm q-mr-sm" @click="exportText" />
+      <q-btn flat round icon="download" size="sm" class="absolute-top-right q-mt-sm q-mr-sm" @click="exportText" />
       <q-input v-model="text" readonly filled autogrow type="textarea" ref="textInput" />
     </q-card-section>
   </q-card>

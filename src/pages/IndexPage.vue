@@ -1,7 +1,7 @@
 <template>
   <WebSocketComponent v-slot="{ isConnected: wsConnected, sendMessage, connect, disconnect, connecting }"
     @message="updateOutput" @connected="handleConnected" @disconnected="handleDisconnected">
-    <q-page class="q-pa-md">
+    <q-page class="q-pa-sm">
       <div class="row q-col-gutter-md" style="text-align: center">
         <div class="col-12">
           <q-btn-group push>
@@ -27,10 +27,10 @@
               <template v-slot:before>
                 <template v-if="!executing">
                   <q-btn v-if="wsConnected" icon="play_arrow" @click="executeCode(sendMessage)" color="green" round
-                    size="xs">
+                    size="md">
                     <q-tooltip anchor="bottom middle" self="top middle"> 執行程式碼 </q-tooltip>
                   </q-btn>
-                  <q-btn v-if="wsConnected" icon="visibility" @click="sendPostRequest" color="blue" round size="xs">
+                  <q-btn v-if="wsConnected" icon="visibility" @click="sendPostRequest" color="blue" round size="md">
                     <q-tooltip anchor="bottom middle" self="top middle"> 可視化分析 </q-tooltip>
                   </q-btn>
                 </template>

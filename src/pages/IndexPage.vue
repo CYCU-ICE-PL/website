@@ -151,7 +151,7 @@ const handleDisconnected = () => {
 
 const sendPostRequest = async () => {
   try {
-    const response = await axios.post(`http://localhost:7090/syntax-tree`, {
+    const response = await axios.post(`https://visualpl.lab214b.uk:5001/syntax-tree`, {
       payload: code.value + '\n',
       interpreterType: interpreterType.value
     })

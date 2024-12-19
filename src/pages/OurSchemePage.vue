@@ -5,9 +5,9 @@
         <div class="row q-col-gutter-md" style="text-align: center">
           <div class="col-12">
             <q-btn-group push>
-              <q-select filled v-model="interpreterType" :options="interpreterOptions" label="文法"
+              <q-select filled v-model="interpreterType" :options="interpreterOptions" label="選擇"
                 :disable="isInterpreterTypeLocked">
-                <q-tooltip anchor="bottom right" self="top middle"> 選擇Interpreter文法 </q-tooltip>
+                <q-tooltip anchor="bottom right" self="top middle"> 選擇欲測試project編號 </q-tooltip>
               </q-select>
               <template v-if="wsConnected">
                 <q-btn icon="link_off" @click="disconnect" color="red" round>
@@ -15,8 +15,8 @@
                 </q-btn>
               </template>
               <template v-else>
-                <q-btn icon="link" @click="() => connect(interpreterType)" color="primary" round v-if="!connecting">
-                  <q-tooltip anchor="bottom middle" self="top middle"> 連線到Interpreter </q-tooltip>
+                <q-btn icon="link" @click="() => connect(`OurScheme${interpreterType}`)" color="primary" round v-if="!connecting">
+                  <q-tooltip anchor="bottom middle" self="top middle"> 點擊連線 </q-tooltip>
                 </q-btn>
                 <q-spinner-tail v-else color="grey" class="q-ma-sm" size="md" />
               </template>
@@ -73,31 +73,27 @@
   const input = ref('')
   const inputTitle = ref('Input')
   const outputTitle = ref('Output')
-  const interpreterType = ref('OurScheme')
+  const interpreterType = ref('project1')
   const isInterpreterTypeLocked = ref(false)
   const executing = ref(false)
   const dialogVisible = ref(false)
   const parseTree = ref('')
   
-  const interpreterOptions = ['OurScheme'] //, 'OurC']  // 可以添加更多的Interpreter文法
+  const interpreterOptions = ['project1', 'project2, 3, 4']
   
   const executeCode = (sendMessage) => {
-    if (!interpreterType.value) {
-      alert('必須選擇一個Interpreter類型')
-      return
-    }
     executing.value = true
     code.value += '\n' // 添加換行符
     input.value += code.value
     const message = {
-      interpreterType: interpreterType.value,
+      interpreterType: `OurScheme${interpreterType.value}`,
       payload: code.value,
     }
     sendMessage(JSON.stringify(message))
     code.value = '' // 清空輸入程式碼
     gtag('event', 'execute_code', {
       event_category: 'Code Execution',
-      event_label: interpreterType.value,
+      event_label: `OurScheme${interpreterType.value}`,
     })
     setTimeout(() => {
       executing.value = false
@@ -153,7 +149,7 @@
     try {
       const response = await axios.post(`https://visualpl.lab214b.uk:5001/syntax-tree`, {
         payload: code.value + '\n',
-        interpreterType: interpreterType.value
+        interpreterType: `OurScheme${interpreterType.value}`
       })
       if (response.status !== 200) {
         throw new Error('請檢查輸入是否正確')
@@ -162,7 +158,7 @@
       dialogVisible.value = true
       gtag('event', 'visualize_syntax_tree', {
         event_category: 'Syntax Tree',
-        event_label: interpreterType.value,
+        event_label: `OurScheme${interpreterType.value}`,
       })
     } catch (error) {
       console.error('Error sending POST request:', error)

@@ -3,6 +3,7 @@
     <div class="text-center">
       <h1 class="title">關於我們</h1>
       <p class="description">此網站的source code以開源在 GitHub 上，歡迎大家參與貢獻。</p>
+      <p class="createby">Created by: Joe Liao</p>
       <q-btn class="github-button" color="black" @click="navigateToGitHub">
         <i class="fab fa-github"></i> GitHub
       </q-btn>
@@ -32,8 +33,13 @@ const navigateToGitHub = () => {
   margin: 1rem 0;
 }
 
-.github-button {
+.createby {
   font-size: 1rem;
+  margin: 1rem 0;
+}
+
+.github-button {
+  font-size: 1.2rem;
   padding: 0.75rem 1.5rem;
   color: white;
   border-radius: 0.5rem;

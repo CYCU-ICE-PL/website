@@ -31,7 +31,6 @@
           </q-item-section>
           <q-item-section>教學</q-item-section>.
         </q-item>
-        <q-separator />
         <q-item to="/About" clickable>
           <q-item-section avatar>
             <q-icon name="info" />

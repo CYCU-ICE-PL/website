@@ -9,7 +9,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="drawer" show-if-above>
+    <q-drawer v-model="drawer">
       <q-list>
         <q-item to="/" exact clickable>
           <q-item-section avatar>
@@ -29,7 +29,7 @@
           <q-item-section avatar>
             <q-icon name="school" />
           </q-item-section>
-          <q-item-section>教學</q-item-section>.
+          <q-item-section>教學</q-item-section>
         </q-item>
         <q-item to="/About" clickable>
           <q-item-section avatar>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 
@@ -68,6 +68,23 @@ const toggleTheme = () => {
 const goHome = () => {
   router.push('/')
 }
+
+// 在組件掛載時發送 gtag 事件
+onMounted(() => {
+  gtag('event', 'page_view', {
+    page_path: router.currentRoute.value.fullPath,
+    page_title: router.currentRoute.value.name,
+  })
+})
+
+// 使用 router.beforeEach 來監聽路由變更
+router.beforeEach((to, _, next) => {
+  gtag('event', 'page_view', {
+    page_path: to.fullPath,
+    page_title: to.name,
+  })
+  next()
+})
 </script>
 
 <style scoped>
@@ -87,5 +104,4 @@ const goHome = () => {
   display: flex;
   align-items: center;
 }
-
 </style>

@@ -33,27 +33,27 @@ const steps = ref([
   {
     title: '步驟 1: 選擇Project',
     description: '在 OurScheme 中，首先選擇你要測試的Project。',
-    image: 'src/data/steps/step1.png'
+    image: '/steps/step1.png'
   },
   {
     title: '步驟 2: 連線到 Project X',
     description: '點擊連線按鈕，連線到選擇的 ProjecX。',
-    image: 'src/data/steps/step2.png'
+    image: '/steps/step2.png'
   },
   {
     title: '步驟 3: 輸入程式碼',
     description: '在輸入框中輸入你要執行的程式碼。',
-    image: 'src/data/steps/step3.png'
+    image: '/steps/step3.png'
   },
   {
     title: '步驟 4: 執行程式碼 or 可視化分析',
     description: '點擊執行按鈕，執行你輸入的程式碼。 或點擊可視化分析按鈕，查看程式碼的語法樹。',
-    image: 'src/data/steps/step4.png'
+    image: '/steps/step4.png'
   },
   {
     title: '步驟 5: 查看結果',
     description: '在輸入框與輸出框中檢查程式碼的執行結果。',
-    image: 'src/data/steps/step5.png'
+    image: '/steps/step5.png'
   }
 ])
 

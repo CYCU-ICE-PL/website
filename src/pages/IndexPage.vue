@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <img src="src/assets/favicon.svg" alt="Logo" class="my-image" />
+    <img src="/icons/favicon.svg" alt="Logo" class="my-image" />
     <q-toolbar-title class="animated-title">歡迎來到 PL 可視化</q-toolbar-title>
     <div class="animated-paragraph">中原大學資訊工程學系「程式語言」課程學習輔助工具，用於程式碼的可視化和執行追蹤。</div>
     <q-space class="q-mt-md" />

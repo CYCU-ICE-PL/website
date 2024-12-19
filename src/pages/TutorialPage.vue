@@ -9,8 +9,11 @@
             <p>{{ stepDetail.description }}</p>
             <img :src="stepDetail.image" alt="Step Image" class="step-image" v-if="stepDetail.image" />
             <q-space />
-            <q-btn v-if="index < steps.length - 1" class="next-button" color="primary" @click="nextStep">下一步</q-btn>
-            <q-btn v-else class="finish-button" color="primary" @click="finishTutorial">完成</q-btn>
+            <div class="button-group">
+              <q-btn v-if="index > 0" icon="arrow_back" class="prev-button" color="primary" @click="prevStep" />
+              <q-btn v-if="index < steps.length - 1" icon="arrow_forward" class="next-button" color="primary" @click="nextStep" />
+              <q-btn v-else class="finish-button" color="primary" @click="finishTutorial">完成</q-btn>
+            </div>
           </div>
         </q-step>
       </q-stepper>
@@ -30,33 +33,39 @@ const steps = ref([
   {
     title: '步驟 1: 選擇Project',
     description: '在 OurScheme 中，首先選擇你要測試的Project。',
-    image: 'path/to/step1-image.png'
+    image: 'src/data/steps/step1.png'
   },
   {
-    title: '步驟 2: 連線到 Interpreter',
-    description: '點擊連線按鈕，連線到選擇的 Interpreter。',
-    image: 'path/to/step2-image.png'
+    title: '步驟 2: 連線到 Project X',
+    description: '點擊連線按鈕，連線到選擇的 ProjecX。',
+    image: 'src/data/steps/step2.png'
   },
   {
     title: '步驟 3: 輸入程式碼',
     description: '在輸入框中輸入你要執行的程式碼。',
-    image: 'path/to/step3-image.png'
+    image: 'src/data/steps/step3.png'
   },
   {
     title: '步驟 4: 執行程式碼 or 可視化分析',
     description: '點擊執行按鈕，執行你輸入的程式碼。 或點擊可視化分析按鈕，查看程式碼的語法樹。',
-    image: 'path/to/step4-image.png'
+    image: 'src/data/steps/step4.png'
   },
   {
-    title: '步驟 5: 查看輸出',
-    description: '在輸出框中查看程式碼的執行結果。',
-    image: 'path/to/step5-image.png'
+    title: '步驟 5: 查看結果',
+    description: '在輸入框與輸出框中檢查程式碼的執行結果。',
+    image: 'src/data/steps/step5.png'
   }
 ])
 
 const nextStep = () => {
   if (step.value < steps.value.length) {
     step.value++
+  }
+}
+
+const prevStep = () => {
+  if (step.value > 1) {
+    step.value--
   }
 }
 
@@ -100,8 +109,14 @@ const navigateToHome = () => {
   margin-top: 1rem;
 }
 
-.next-button, .finish-button {
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
   margin-top: 1rem;
 }
 
+.next-button, .prev-button, .finish-button {
+  margin-top: 1rem;
+}
 </style>

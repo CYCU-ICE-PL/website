@@ -14,7 +14,6 @@
           </div>
         </q-step>
       </q-stepper>
-      <q-btn class="back-button" color="secondary" @click="navigateToHome">回首頁</q-btn>
     </div>
   </q-page>
 </template>

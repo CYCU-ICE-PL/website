@@ -3,9 +3,7 @@
     <q-header elevated reveal>
       <q-toolbar>
         <q-btn flat dense round icon="menu" @click="drawer = !drawer" />
-        <q-toolbar-title class="title">
-          PL
-        </q-toolbar-title>
+        <q-btn flat round icon="home" @click="goHome" />
         <q-space />
         <q-btn flat round :icon="isDark ? 'light_mode' : 'dark_mode'" @click="toggleTheme" />
       </q-toolbar>
@@ -13,7 +11,7 @@
 
     <q-drawer v-model="drawer" show-if-above>
       <q-list>
-        <q-item to="/" clickable>
+        <q-item to="/" exact clickable>
           <q-item-section avatar>
             <q-icon name="home" />
           </q-item-section>
@@ -52,8 +50,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
 
 const $q = useQuasar()
+const router = useRouter()
 const isDark = ref($q.dark.isActive)
 const drawer = ref(false)
 
@@ -64,6 +64,10 @@ const toggleTheme = () => {
     event_category: 'Theme',
     event_label: isDark.value ? 'Dark Mode' : 'Light Mode',
   })
+}
+
+const goHome = () => {
+  router.push('/')
 }
 </script>
 

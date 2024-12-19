@@ -32,11 +32,21 @@ p {
 button {
   font-family: 'Nunito', sans-serif;
   font-weight: 600;
+  transition: background-color 0.1s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  background: linear-gradient(to bottom, #f7f7f7, #e6e6e6);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+button:hover {
+  background-color: #0056b3; // 修改為你想要的顏色
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 
 // 設定 Quasar 元素的字體大小
-
 textarea,
 .q-input,
 .q-spinner,
@@ -45,4 +55,3 @@ textarea,
 .q-card-actions {
   font-size: 1.2rem; // 調整這裡的數值來改變字體大小
 }
-

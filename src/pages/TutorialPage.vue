@@ -104,17 +104,4 @@ const navigateToHome = () => {
   margin-top: 1rem;
 }
 
-.back-button {
-  font-size: 1rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #007aff;
-  color: white;
-  border-radius: 0.5rem;
-  transition: transform 0.3s ease-in-out;
-  text-transform: none;
-}
-
-.back-button:hover {
-  transform: scale(1.1);
-}
 </style>

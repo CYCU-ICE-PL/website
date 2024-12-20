@@ -38,8 +38,8 @@ const steps = ref([
     images: ['steps/step1.png']
   },
   {
-    title: '步驟 2: 連線到 Project',
-    description: '點擊連線按鈕，連線到選擇的 Projec。',
+    title: '步驟 2: 點擊 Project',
+    description: '點擊連線Project按鈕，連線到選擇的 Project。',
     images: ['steps/step2.png']
   },
   {

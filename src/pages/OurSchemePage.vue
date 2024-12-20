@@ -4,23 +4,18 @@
     <q-page class="q-pa-sm">
       <div class="row q-col-gutter-md" style="text-align: center">
         <div class="col-12">
+          
           <q-btn-group push>
-            <q-select filled v-model="interpreterType" :options="interpreterOptions" label="選擇"
-              :disable="isInterpreterTypeLocked">
-              <q-tooltip anchor="bottom right" self="top middle"> 選擇欲測試project編號 </q-tooltip>
-            </q-select>
-            <template v-if="wsConnected">
-              <q-btn icon="link_off" @click="disconnect" color="red" round>
-                <q-tooltip anchor="bottom middle" self="top middle"> 中斷連線 </q-tooltip>
-              </q-btn>
-            </template>
-            <template v-else>
-              <q-btn icon="link" @click="() => connect(`OurScheme${interpreterType}`)" color="primary" round v-if="!connecting">
-                <q-tooltip anchor="bottom middle" self="top middle"> 點擊連線 </q-tooltip>
-              </q-btn>
-              <q-spinner-tail v-else color="grey" class="q-ma-sm" size="md" />
-            </template>
+            <q-btn v-for="option in interpreterOptions" :key="option" :label="option" @click="() => { currentProject = option; connect(`OurScheme${option}`); }" :disable="isInterpreterTypeLocked || connecting" :color="currentProject === option ? 'green' : 'grey'" style="text-transform: none;">
+              <q-tooltip anchor="bottom right" self="top middle">
+                {{ wsConnected && currentProject === option ? `已成功連線到 ${option}` : `選擇 ${option}` }}
+              </q-tooltip>
+            </q-btn>
+            <q-btn v-if="wsConnected" icon="link_off" @click="disconnect" color="red">
+              <q-tooltip anchor="bottom right" self="top middle"> 斷開連線 </q-tooltip>
+            </q-btn>
           </q-btn-group>
+          
           <div class="col-12">
             <q-input filled v-model="code" label="輸入程式碼" type="textarea" autogrow class="q-mt-md" :spellcheck="false"
               :disable="!wsConnected || executing">
@@ -84,14 +79,15 @@ const output = ref('')
 const input = ref('')
 const inputTitle = ref('Input')
 const outputTitle = ref('Output')
-const interpreterType = ref('project1')
+const interpreterType = ref('')
 const isInterpreterTypeLocked = ref(false)
 const executing = ref(false)
 const dialogVisible = ref(false)
 const parseTree = ref('')
 const generateTree = ref(false)
+const currentProject = ref('')
 
-const interpreterOptions = ['project1', 'project2, 3, 4']
+const interpreterOptions = ['project1', 'project2', 'project3', 'project4']
 
 const executeCode = async (sendMessage) => {
   executing.value = true
@@ -150,6 +146,7 @@ const handleConnected = () => {
 
 const handleDisconnected = () => {
   unlockInterpreterType()
+  currentProject.value = ''
   $q.notify({
     type: 'warning',
     message: '連線中斷',

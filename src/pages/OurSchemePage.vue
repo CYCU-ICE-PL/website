@@ -79,7 +79,6 @@ const output = ref('')
 const input = ref('')
 const inputTitle = ref('Input')
 const outputTitle = ref('Output')
-const interpreterType = ref('')
 const isInterpreterTypeLocked = ref(false)
 const executing = ref(false)
 const dialogVisible = ref(false)
@@ -94,13 +93,13 @@ const executeCode = async (sendMessage) => {
   code.value += '\n' // 添加換行符
   input.value += code.value
   const message = {
-    interpreterType: `OurScheme${interpreterType.value}`,
+    interpreterType: `OurScheme${currentProject.value}`,
     payload: code.value,
   }
   sendMessage(JSON.stringify(message))
   gtag('event', 'execute_code', {
     event_category: 'Code Execution',
-    event_label: `OurScheme${interpreterType.value}`,
+    event_label: `OurScheme${currentProject.value}`,
   })
   if (generateTree.value) {
     await sendPostRequest()
@@ -161,7 +160,7 @@ const sendPostRequest = async () => {
   try {
     const response = await axios.post(`https://visualpl.lab214b.uk:5001/syntax-tree`, {
       payload: code.value + '\n',
-      interpreterType: `OurScheme${interpreterType.value}`
+      interpreterType: `OurScheme`
     })
     if (response.status !== 200) {
       throw new Error('請檢查輸入是否正確')
@@ -170,7 +169,7 @@ const sendPostRequest = async () => {
     dialogVisible.value = true
     gtag('event', 'visualize_syntax_tree', {
       event_category: 'Syntax Tree',
-      event_label: `OurScheme${interpreterType.value}`,
+      event_label: `OurScheme`,
     })
   } catch (error) {
     console.error('Error sending POST request:', error)

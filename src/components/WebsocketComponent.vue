@@ -42,7 +42,7 @@ const connect = async (interpreterType) => {
     
     // 發送 interpreter type
     if (interpreterType) {
-      sendMessage(JSON.stringify({ interpreterType: interpreterType, payload: null }))
+      sendMessage(JSON.stringify({ interpreterType: interpreterType, payload: '1 ;testnum \n' })) // 用於讓使用者不必手動輸入testnum
     }
   }
 

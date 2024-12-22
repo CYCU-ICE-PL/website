@@ -12,7 +12,7 @@
         <q-badge color="grey" class="q-ml-sm">{{ starCount }}</q-badge>
       </q-btn>
       <q-btn class="github-button" color="black" @click="navigateToIssue">
-        <i class="fas fa-exclamation-circle"></i> 問題回報
+        <i class="fas fa-exclamation-triangle"></i> 問題回報
       </q-btn>
       <div v-if="contributors.length" class="contributors-list">
         <q-toolbar class="contributors-title">

@@ -55,6 +55,9 @@
     </q-page>
     <q-dialog v-model="dialogVisible" full-height full-width>
       <q-card flat>
+        <q-badge color="pink" text-color="white" class="absolute-top-left">
+          Preview
+        </q-badge>
         <ParseTree :parseTree="parseTree" />
         <q-card-actions align="right">
           <q-btn label="關閉" color="primary" v-close-popup />

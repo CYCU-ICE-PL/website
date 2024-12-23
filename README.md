@@ -32,3 +32,7 @@ quasar build
 - PL 可視化: 用於程式語言的可視化和執行追蹤
 - WebSocket 支援: 使用 WebSocket 進行即時通訊
 - D3.js: 使用 D3.js 進行數據可視化
+
+## 待改進
+- websocket 與 OurScheme module 分工不明確
+- 執行程式碼與可視化的操作邏輯有進步空間

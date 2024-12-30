@@ -6,10 +6,15 @@
         <div class="col-12">
           
           <q-btn-group push>
-            <q-btn v-for="option in interpreterOptions" :key="option" :label="option" @click="() => { currentProject = option; connect(`OurScheme${option}`); }" :disable="isInterpreterTypeLocked || connecting" :color="currentProject === option ? 'green' : 'grey'" style="text-transform: none;">
-              <q-tooltip anchor="bottom right" self="top middle">
-                {{ wsConnected && currentProject === option ? `已成功連線到 ${option}` : `選擇 ${option}` }}
-              </q-tooltip>
+            <q-btn v-for="option in interpreterOptions" :key="option" :label="option" @click="() => { currentProject = option; connect(`OurScheme${option}`); }" :disable="isInterpreterTypeLocked || connecting" :color="currentProject === option && wsConnected ? 'green' : 'grey'" style="text-transform: none;">
+              <template v-if="connecting && currentProject === option">
+                <q-spinner size="md" color="primary" />
+              </template>
+              <template v-else>
+                <q-tooltip anchor="bottom right" self="top middle">
+                  {{ wsConnected && currentProject === option ? `已成功連線到 ${option}` : `選擇 ${option}` }}
+                </q-tooltip>
+              </template>
             </q-btn>
             <q-btn v-if="wsConnected" icon="link_off" @click="disconnect" color="red">
               <q-tooltip anchor="bottom right" self="top middle"> 斷開連線 </q-tooltip>

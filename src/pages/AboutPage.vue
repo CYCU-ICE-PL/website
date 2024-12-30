@@ -3,7 +3,7 @@
     <div class="text-center">
       <h1 class="title">關於</h1>
       <p class="description">如果您喜歡這個網站，請不要忘記按個讚支持我們</p>
-      <p class="description">此網站的source code以開源在 GitHub 上，歡迎大家參與貢獻!</p>
+      <p class="description">此網站的source code已開源在 GitHub 上，歡迎大家參與貢獻!</p>
       <q-btn class="github-button" color="black" @click="navigateToGitHub">
         <i class="fab fa-github"></i> GitHub
       </q-btn>

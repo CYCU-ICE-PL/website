@@ -44,7 +44,7 @@
           <q-item v-for="commit in commits" :key="commit.sha">
             <q-item-section>
               <q-item-label>{{ commit.commit.message }}</q-item-label>
-              <q-item-label caption>{{ commit.commit.author.name }} - {{ formatDate(commit.commit.author.date) }}</q-item-label>
+              <q-item-label caption>{{ commit.author.login }} - {{ formatDate(commit.commit.author.date) }}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>

@@ -6,7 +6,10 @@
     <q-space class="q-mt-md" />
     <q-btn class="animated-button" color="primary" @click="navigateToOurScheme">OurScheme</q-btn>
     <q-space class="q-mt-md" />
-    <q-btn class="animated-button" color="secondary" icon="school" @click="navigateToTutorial">教學</q-btn>
+    <div>
+      <q-btn class="animated-button" color="secondary" icon="school" @click="navigateToTutorial">教學</q-btn>
+      <q-btn class="animated-button" color="secondary" icon="info" @click="navigateToAbout">關於</q-btn>
+    </div>
   </div>
 </template>
 
@@ -21,6 +24,10 @@ router.push('/OurScheme')
 
 const navigateToTutorial = () => {
 router.push('/Tutorial')
+}
+
+const navigateToAbout = () => {
+router.push('/About')
 }
 
 </script>
@@ -56,6 +63,7 @@ color: white;
 border-radius: 0.5rem;
 transition: transform 0.3s ease-in-out;
 text-transform: none; /* 確保文字不轉換為大寫 */
+margin: 0.5rem;
 }
 
 .animated-button:hover {

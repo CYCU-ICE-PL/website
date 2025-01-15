@@ -142,6 +142,7 @@ const clearInputOutput = () => {
 const handleConnected = () => {
   lockInterpreterType()
   clearInputOutput()
+  input.value = '1 ;testnum \n' // 初始化輸入
   $q.notify({
     type: 'positive',
     message: '連線成功',

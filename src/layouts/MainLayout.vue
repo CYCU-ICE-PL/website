@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" @click="drawer = !drawer" />
         <q-btn flat round icon="home" @click="goHome" />
-        <q-space />
+        <q-toolbar-title>{{ currentPageTitle }}</q-toolbar-title>
         <q-btn flat round :icon="isDark ? 'light_mode' : 'dark_mode'" @click="toggleTheme" />
       </q-toolbar>
     </q-header>
@@ -55,6 +55,7 @@ const $q = useQuasar()
 const router = useRouter()
 const isDark = ref($q.dark.isActive)
 const drawer = ref(false)
+const currentPageTitle = ref('')
 
 const toggleTheme = () => {
   $q.dark.toggle()
@@ -71,6 +72,7 @@ const goHome = () => {
 
 // 在組件掛載時發送 gtag 事件
 onMounted(() => {
+  currentPageTitle.value = router.currentRoute.value.name
   gtag('event', 'page_view', {
     page_path: router.currentRoute.value.fullPath,
     page_title: router.currentRoute.value.name,
@@ -79,6 +81,7 @@ onMounted(() => {
 
 // 使用 router.beforeEach 來監聽路由變更
 router.beforeEach((to, _, next) => {
+  currentPageTitle.value = to.name
   gtag('event', 'page_view', {
     page_path: to.fullPath,
     page_title: to.name,

@@ -29,8 +29,9 @@ const exportText = () => {
   const blob = new Blob([text.value], { type: 'text/plain;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
+  const extension = props.title.toLowerCase() === 'input' ? 'in' : 'out'
   link.href = url
-  link.download = `${props.title}.txt`
+  link.download = `testcase.${extension}`
   link.click()
   URL.revokeObjectURL(url)
 }

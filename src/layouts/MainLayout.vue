@@ -6,6 +6,11 @@
         <q-btn flat round icon="home" @click="goHome" />
         <q-toolbar-title>{{ currentPageTitle }}</q-toolbar-title>
         <q-btn flat round :icon="isDark ? 'light_mode' : 'dark_mode'" @click="toggleTheme" />
+        <q-img 
+        src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://cycu-ice-pl.github.io/website/&count_bg=%2379C83D&title_bg=%23555555&icon_color=%23E7E7E7&title=views&edge_flat=false"
+        alt="瀏覽次數"
+        style="width: 150px; height: auto;"
+        />
       </q-toolbar>
     </q-header>
 

@@ -5,6 +5,7 @@
     <div class="animated-paragraph">中原大學資訊工程學系「程式語言」課程學習輔助工具，用於程式碼的可視化和執行追蹤。</div>
     <q-space class="q-mt-md" />
     <q-btn class="animated-button" color="primary" @click="navigateToOurScheme">OurScheme</q-btn>
+    <q-btn class="animated-button" color="primary" @click="navigateToOurC">OurC</q-btn>
     <q-space class="q-mt-md" />
     <div>
       <q-btn class="animated-button" color="secondary" icon="school" @click="navigateToTutorial">教學</q-btn>
@@ -20,6 +21,10 @@ const router = useRouter()
 
 const navigateToOurScheme = () => {
 router.push('/OurScheme')
+}
+
+const navigateToOurC = () => {
+router.push('/OurC')
 }
 
 const navigateToTutorial = () => {

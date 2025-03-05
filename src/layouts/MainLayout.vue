@@ -24,6 +24,12 @@
           </q-item-section>
           <q-item-section>OurScheme</q-item-section>
         </q-item>
+        <q-item to="/OurC" clickable>
+          <q-item-section avatar>
+            <q-icon name="code" />
+          </q-item-section>
+          <q-item-section>OurC</q-item-section>
+        </q-item>
         <q-item to = "/Visualize" clickable >
           <q-item-section avatar>
             <q-icon name="visibility" />

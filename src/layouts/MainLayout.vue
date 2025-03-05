@@ -24,6 +24,12 @@
           </q-item-section>
           <q-item-section>OurScheme</q-item-section>
         </q-item>
+        <q-item to = "/Visualize" clickable >
+          <q-item-section avatar>
+            <q-icon name="visibility" />
+          </q-item-section>
+          <q-item-section>可視化</q-item-section>
+        </q-item>
         <q-separator />
         <q-item to="/Tutorial" clickable>
           <q-item-section avatar>

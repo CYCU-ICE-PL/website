@@ -33,20 +33,6 @@
                 </template>
                 <q-spinner v-else color="grey" size="xs" />
               </template>
-              <template v-slot:append>
-                <q-btn
-                  flat
-                  round
-                  :icon="generateTree ? 'visibility' : 'visibility_off'"
-                  :color="generateTree ? 'green' : 'grey'"
-                  @click="generateTree = !generateTree"
-                  size="sm"
-                >
-                  <q-tooltip anchor="bottom middle" self="top middle">
-                    {{ generateTree ? '已開啟可視化分析' : '已關閉可視化分析' }}
-                  </q-tooltip>
-                </q-btn>
-              </template>
             </q-input>
           </div>
         </div>
@@ -58,17 +44,6 @@
         </div>
       </div>
     </q-page>
-    <q-dialog v-model="dialogVisible" full-height full-width>
-      <q-card flat>
-        <q-badge color="pink" text-color="white" class="absolute-top-left">
-          Preview
-        </q-badge>
-        <ParseTree :parseTree="parseTree" />
-        <q-card-actions align="right">
-          <q-btn label="關閉" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </WebSocketComponent>
 </template>
 
@@ -77,8 +52,6 @@ import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import TextArea from 'components/TextArea.vue'
 import WebSocketComponent from 'components/WebsocketComponent.vue'
-import ParseTree from 'components/ParseTree.vue'
-import axios from 'axios'
 
 const $q = useQuasar()
 
@@ -89,9 +62,6 @@ const inputTitle = ref('Input')
 const outputTitle = ref('Output')
 const isInterpreterTypeLocked = ref(false)
 const executing = ref(false)
-const dialogVisible = ref(false)
-const parseTree = ref('')
-const generateTree = ref(false)
 const currentProject = ref('')
 
 const interpreterOptions = ['project1', 'project2', 'project3', 'project4']
@@ -109,9 +79,6 @@ const executeCode = async (sendMessage) => {
     event_category: 'Code Execution',
     event_label: `OurScheme${currentProject.value}`,
   })
-  if (generateTree.value) {
-    await sendPostRequest()
-  }
   code.value = '' // 清空輸入程式碼
   setTimeout(() => {
     executing.value = false
@@ -163,32 +130,5 @@ const handleDisconnected = () => {
     progress: true,
     icon: 'warning'
   })
-}
-
-const sendPostRequest = async () => {
-  try {
-    const response = await axios.post(`https://visualpl.lab214b.uk:5001/syntax-tree`, {
-      payload: code.value + '\n',
-      interpreterType: `OurScheme`
-    })
-    if (response.status !== 200) {
-      throw new Error('請檢查輸入是否正確')
-    }
-    parseTree.value = response.data.parseTree
-    dialogVisible.value = true
-    gtag('event', 'visualize_syntax_tree', {
-      event_category: 'Syntax Tree',
-      event_label: `OurScheme`,
-    })
-  } catch (error) {
-    console.error('Error sending POST request:', error)
-    $q.notify({
-      type: 'negative',
-      message: '可視化請求失敗',
-      timeout: 1200,
-      position: 'top',
-      progress: true,
-    })
-  }
 }
 </script>

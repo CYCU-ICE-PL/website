@@ -48,13 +48,13 @@ const steps = ref([
     images: ['steps/step3.png']
   },
   {
-    title: '步驟 4: 執行程式碼',
-    description: '點擊執行按鈕，執行你輸入的程式碼。',
+    title: '步驟 4: 送出程式碼',
+    description: '點擊送出按鈕，讓後端(直譯器)讀取你輸入的程式碼。',
     images: ['steps/step4-1.png']
   },
   {
     title: '步驟 5: 查看結果',
-    description: '在輸入框與輸出框中檢查程式碼的執行結果。',
+    description: '在輸入框與輸出框中檢查歷史輸入和執行結果。',
     images: ['steps/step5-1.png']
   }
 ])

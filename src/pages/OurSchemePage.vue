@@ -26,9 +26,9 @@
               :disable="!wsConnected || executing">
               <template v-slot:before>
                 <template v-if="!executing">
-                  <q-btn v-if="wsConnected" icon="play_arrow" @click="executeCode(sendMessage)" color="green" round
+                  <q-btn v-if="wsConnected" icon="play_arrow" @click="sendCode(sendMessage)" color="green" round
                     size="md">
-                    <q-tooltip anchor="bottom middle" self="top middle"> 執行程式碼 </q-tooltip>
+                    <q-tooltip anchor="bottom middle" self="top middle"> 送出 </q-tooltip>
                   </q-btn>
                 </template>
                 <q-spinner v-else color="grey" size="xs" />
@@ -66,7 +66,7 @@ const currentProject = ref('')
 
 const interpreterOptions = ['project1', 'project2', 'project3', 'project4']
 
-const executeCode = async (sendMessage) => {
+const sendCode = async (sendMessage) => {
   executing.value = true
   code.value += '\n' // 添加換行符
   input.value += code.value

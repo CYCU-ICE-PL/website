@@ -1,12 +1,23 @@
 <template>
-  <WebSocketComponent v-slot="{ isConnected: wsConnected, sendMessage, connect, disconnect, connecting }"
-    @message="updateOutput" @connected="handleConnected" @disconnected="handleDisconnected">
+  <WebSocketComponent
+    v-slot="{ isConnected: wsConnected, sendMessage, connect, disconnect, connecting }"
+    @message="updateOutput"
+    @connected="handleConnected"
+    @disconnected="handleDisconnected"
+  >
     <q-page class="q-pa-sm">
       <div class="row q-col-gutter-md" style="text-align: center">
         <div class="col-12">
-          
           <q-btn-group push>
-            <q-btn v-for="option in interpreterOptions" :key="option" :label="option" @click="() => { currentProject = option; connect(`OurScheme${option}`); }" :disable="isInterpreterTypeLocked || connecting" :color="currentProject === option && wsConnected ? 'green' : 'grey'" style="text-transform: none;">
+            <q-btn
+              v-for="option in interpreterOptions"
+              :key="option"
+              :label="option"
+              @click="() => { currentProject = option; connect(`OurScheme${option}`); }"
+              :disable="isInterpreterTypeLocked || connecting"
+              :color="currentProject === option && wsConnected ? 'green' : 'grey'"
+              style="text-transform: none;"
+            >
               <template v-if="connecting && currentProject === option">
                 <q-spinner size="md" color="primary" />
               </template>
@@ -20,11 +31,21 @@
               <q-tooltip anchor="bottom right" self="top middle"> 斷開連線 </q-tooltip>
             </q-btn>
           </q-btn-group>
-          <div class="col-12">
-            <q-input filled v-model="code" label="輸入程式碼" type="textarea" autogrow class="q-mt-md" :spellcheck="false"
-              :disable="!wsConnected || executing" />
-          </div>
         </div>
+
+        <div class="col-12">
+          <q-input
+            filled
+            v-model="code"
+            label="輸入程式碼"
+            type="textarea"
+            autogrow
+            class="q-mt-md"
+            :spellcheck="false"
+            :disable="!wsConnected || executing"
+          />
+        </div>
+
         <div class="col-6">
           <TextArea :initialText="input" :title="inputTitle" @update:text="updateInput" />
         </div>
@@ -32,7 +53,7 @@
           <TextArea :initialText="output" :title="outputTitle" readonly />
         </div>
       </div>
-      
+
       <div style="max-width: 500px;">
         <q-badge color="pink" label="Preview⬇️" />
         <q-expansion-item icon="history" label="交互紀錄">
@@ -46,15 +67,36 @@
             <q-tooltip anchor="bottom middle" self="top middle"> 清除 </q-tooltip>
           </q-fab-action>
           <q-fab-action v-if="wsConnected">
-            <q-slider v-model="waitTime" :min="50" :max="1000" :step=50 label :label-value="'送出間隔時間'+ waitTime + 'ms'" style="width: 50px;" />
+            <q-slider
+              v-model="waitTime"
+              :min="50"
+              :max="1000"
+              :step="50"
+              label
+              :label-value="'送出間隔時間 ' + waitTime + 'ms'"
+              style="width: 50px;"
+            />
           </q-fab-action>
           <template v-if="!executing">
             <q-fab-action v-if="wsConnected" icon="send" @click="sendCode(sendMessage)" color="green">
               <q-tooltip anchor="bottom middle" self="top middle"> 送出 </q-tooltip>
             </q-fab-action>
-            <q-fab-action v-else icon="hourglass_empty" color="grey" 
-              @click="() => $q.notify({ type: 'warning', message: '請先選擇project',
-              timeout: 1200, position: 'top', progress: true, icon: 'warning' })" />
+            <q-fab-action
+              v-else
+              icon="hourglass_empty"
+              color="grey"
+              @click="
+                () =>
+                  $q.notify({
+                    type: 'warning',
+                    message: '請先選擇 project',
+                    timeout: 1200,
+                    position: 'top',
+                    progress: true,
+                    icon: 'warning',
+                  })
+              "
+            />
           </template>
           <q-fab-action v-else icon="hourglass_empty" color="grey" />
         </q-fab>
@@ -64,96 +106,98 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useQuasar } from 'quasar'
-import TextArea from 'components/TextArea.vue'
-import WebSocketComponent from 'components/WebsocketComponent.vue'
+import { ref } from 'vue';
+import { useQuasar } from 'quasar';
+import TextArea from 'components/TextArea.vue';
+import WebSocketComponent from 'components/WebsocketComponent.vue';
 
-const $q = useQuasar()
+const $q = useQuasar();
 
-const code = ref('')
-const output = ref('')
-const input = ref('')
-const inputTitle = ref('Input')
-const outputTitle = ref('Output')
-const isInterpreterTypeLocked = ref(false)
-const executing = ref(false)
-const fab = ref(null)
-const currentProject = ref('')
-const waitTime = ref(50) 
-const interactionLog = ref('') // 新增交互紀錄的狀態
-
-const interpreterOptions = ['project1', 'project2', 'project3', 'project4']
+const code = ref('');
+const output = ref('');
+const input = ref('');
+const inputTitle = ref('Input');
+const outputTitle = ref('Output');
+const isInterpreterTypeLocked = ref(false);
+const executing = ref(false);
+const fab = ref(null);
+const currentProject = ref('');
+const waitTime = ref(50);
+const interactionLog = ref(''); // 交互紀錄狀態
+const interpreterOptions = ['project1', 'project2', 'project3', 'project4'];
 
 const sendCode = async (sendMessage) => {
-  executing.value = true
-  const lines = code.value.split('\n')
+  executing.value = true;
+  const lines = code.value.split('\n');
+
   for (const line of lines) {
-    input.value += line + '\n'
+    input.value += line + '\n';
     const message = {
       interpreterType: `OurScheme${currentProject.value}`,
-      payload: line+'\n',
-    }
-    sendMessage(JSON.stringify(message))
-    interactionLog.value += `${line}\n` // 記錄發送的訊息
-    code.value = code.value.replace(line+'\n', '') // 移除已經發送的訊息
-    await new Promise(resolve => setTimeout(resolve, waitTime.value)) 
+      payload: line + '\n',
+    };
+    sendMessage(JSON.stringify(message));
+    interactionLog.value += `${line}\n`; // 記錄發送的訊息
+    code.value = code.value.replace(line + '\n', ''); // 移除已發送的訊息
+    await new Promise((resolve) => setTimeout(resolve, waitTime.value));
   }
-  code.value = '' // 清空輸入程式碼
-  executing.value = false
-}
+
+  code.value = ''; // 清空輸入程式碼
+  executing.value = false;
+  fab.value.show();
+};
 
 const updateInput = (newInput) => {
-  input.value = newInput
-}
+  input.value = newInput;
+};
 
 const updateOutput = (message) => {
-  output.value += message // 將 WebSocket 回傳的訊息添加到 output
-  interactionLog.value += `${message}` // 記錄接收的訊息
-}
+  output.value += message; // WebSocket 回傳訊息
+  interactionLog.value += `${message}`; // 記錄接收訊息
+};
 
 const lockInterpreterType = () => {
-  isInterpreterTypeLocked.value = true
-}
+  isInterpreterTypeLocked.value = true;
+};
 
 const unlockInterpreterType = () => {
-  isInterpreterTypeLocked.value = false
-}
+  isInterpreterTypeLocked.value = false;
+};
 
 const clearInputOutput = () => {
-  code.value = ''
-  input.value = ''
-  output.value = ''
-  interactionLog.value = ''
-}
+  code.value = '';
+  input.value = '';
+  output.value = '';
+  interactionLog.value = '';
+};
 
 const handleConnected = () => {
-  lockInterpreterType()
-  clearInputOutput()
-  input.value = '1\n' // 初始化輸入(TestNumber)
-  interactionLog.value = '1\n' // 初始化交互紀錄
-  fab.value.show()
+  lockInterpreterType();
+  clearInputOutput();
+  input.value = '1\n'; // 初始化輸入 (TestNumber)
+  interactionLog.value = '1\n'; // 初始化交互紀錄
+  fab.value.show();
   $q.notify({
     type: 'positive',
     message: '連線成功',
     timeout: 1200,
     position: 'top',
     progress: true,
-  })
-}
+  });
+};
 
 const handleDisconnected = () => {
-  unlockInterpreterType()
-  currentProject.value = ''
+  unlockInterpreterType();
+  currentProject.value = '';
   $q.notify({
     type: 'warning',
     message: '連線中斷',
     timeout: 1200,
     position: 'top',
     progress: true,
-    icon: 'warning'
-  })
-}
+    icon: 'warning',
+  });
+};
 
 const confirmClearInputOutput = () => {
   $q.dialog({
@@ -161,14 +205,14 @@ const confirmClearInputOutput = () => {
     message: '您確定要清除所有輸入和輸出嗎？',
     ok: {
       label: '確定',
-      color: 'red'
+      color: 'red',
     },
     cancel: {
       label: '取消',
-      color: 'primary'
-    }
+      color: 'primary',
+    },
   }).onOk(() => {
-    clearInputOutput()
-  })
-}
+    clearInputOutput();
+  });
+};
 </script>

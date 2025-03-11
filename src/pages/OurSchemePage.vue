@@ -55,7 +55,9 @@
       </div>
 
       <div style="max-width: 500px;">
-        <q-badge color="pink" label="Preview⬇️" />
+        <q-badge color="pink" label="Preview⬇️" >
+          <q-tooltip>間隔時間低於50ms可能會得到錯誤的交互結果</q-tooltip>
+        </q-badge>
         <q-expansion-item icon="history" label="交互紀錄">
           <q-input filled v-model="interactionLog" type="textarea" autogrow readonly />
         </q-expansion-item>
@@ -69,7 +71,7 @@
           <q-fab-action v-if="wsConnected">
             <q-slider
               v-model="waitTime"
-              :min="50"
+              :min="0"
               :max="1000"
               :step="50"
               label

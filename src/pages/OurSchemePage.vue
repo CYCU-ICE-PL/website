@@ -144,7 +144,8 @@ const sendCode = async (sendMessage) => {
     };
     sendMessage(JSON.stringify(message));
     interactionLog.value += `${line}\n`; // 記錄發送的訊息
-    code.value = code.value.replace(line + '\n', ''); // 移除已發送的訊息
+    code.value = code.value.replace(line, ''); // 移除已發送的訊息
+    code.value = code.value.replace('\n', ''); // 移除換行符號
     await new Promise((resolve) => setTimeout(resolve, waitTime.value));
   }
   executing.value = false;

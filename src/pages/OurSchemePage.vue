@@ -46,7 +46,7 @@
             <q-tooltip anchor="bottom middle" self="top middle"> 清除 </q-tooltip>
           </q-fab-action>
           <q-fab-action v-if="wsConnected">
-            <q-slider v-model="waitTime" :min="50" :max="1000" :step=50 label :label-value="'送出間隔時間'+ waitTime" style="width: 50px;" />
+            <q-slider v-model="waitTime" :min="50" :max="1000" :step=50 label :label-value="'送出間隔時間'+ waitTime + 'ms'" style="width: 50px;" />
           </q-fab-action>
           <template v-if="!executing">
             <q-fab-action v-if="wsConnected" icon="send" @click="sendCode(sendMessage)" color="green">

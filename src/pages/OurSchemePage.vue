@@ -125,12 +125,16 @@ const currentProject = ref('');
 const waitTime = ref(50);
 const interactionLog = ref(''); // 交互紀錄狀態
 const interpreterOptions = ['project1', 'project2', 'project3', 'project4'];
+const sendlock = ref(false);
 
 const sendCode = async (sendMessage) => {
   executing.value = true;
   const lines = code.value.split('\n');
 
   for (const line of lines) {
+    if (sendlock.value === true) {
+      break;
+    }
     input.value += line + '\n';
     const message = {
       interpreterType: `OurScheme${currentProject.value}`,
@@ -141,8 +145,6 @@ const sendCode = async (sendMessage) => {
     code.value = code.value.replace(line + '\n', ''); // 移除已發送的訊息
     await new Promise((resolve) => setTimeout(resolve, waitTime.value));
   }
-
-  code.value = ''; // 清空輸入程式碼
   executing.value = false;
   fab.value.show();
 };
@@ -172,6 +174,7 @@ const clearInputOutput = () => {
 };
 
 const handleConnected = () => {
+  sendlock.value = false;
   lockInterpreterType();
   clearInputOutput();
   input.value = '1\n'; // 初始化輸入 (TestNumber)
@@ -187,6 +190,7 @@ const handleConnected = () => {
 };
 
 const handleDisconnected = () => {
+  sendlock.value = true;
   unlockInterpreterType();
   currentProject.value = '';
   $q.notify({

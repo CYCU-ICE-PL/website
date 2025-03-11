@@ -20,20 +20,9 @@
               <q-tooltip anchor="bottom right" self="top middle"> 斷開連線 </q-tooltip>
             </q-btn>
           </q-btn-group>
-          
           <div class="col-12">
             <q-input filled v-model="code" label="輸入程式碼" type="textarea" autogrow class="q-mt-md" :spellcheck="false"
-              :disable="!wsConnected || executing">
-              <template v-slot:before>
-                <template v-if="!executing">
-                  <q-btn v-if="wsConnected" icon="play_arrow" @click="sendCode(sendMessage)" color="green" round
-                    size="md">
-                    <q-tooltip anchor="bottom middle" self="top middle"> 送出 </q-tooltip>
-                  </q-btn>
-                </template>
-                <q-spinner v-else color="grey" size="xs" />
-              </template>
-            </q-input>
+              :disable="!wsConnected || executing" />
           </div>
         </div>
         <div class="col-6">
@@ -43,6 +32,33 @@
           <TextArea :initialText="output" :title="outputTitle" readonly />
         </div>
       </div>
+      
+      <div style="max-width: 500px;">
+        <q-badge color="pink" label="Preview⬇️" />
+        <q-expansion-item icon="history" label="交互紀錄">
+          <q-input filled v-model="interactionLog" type="textarea" autogrow readonly />
+        </q-expansion-item>
+      </div>
+
+      <q-page-sticky position="bottom-right" style="margin-top: 20px;">
+        <q-fab ref="fab" icon="settings" active-icon="close" direction="left" color="primary" :active="true">
+          <q-fab-action icon="delete" @click="confirmClearInputOutput" color="grey">
+            <q-tooltip anchor="bottom middle" self="top middle"> 清除 </q-tooltip>
+          </q-fab-action>
+          <q-fab-action v-if="wsConnected">
+            <q-slider v-model="waitTime" :min="50" :max="1000" :step=50 label :label-value="'送出間隔時間'+ waitTime" style="width: 50px;" />
+          </q-fab-action>
+          <template v-if="!executing">
+            <q-fab-action v-if="wsConnected" icon="send" @click="sendCode(sendMessage)" color="green">
+              <q-tooltip anchor="bottom middle" self="top middle"> 送出 </q-tooltip>
+            </q-fab-action>
+            <q-fab-action v-else icon="hourglass_empty" color="grey" 
+              @click="() => $q.notify({ type: 'warning', message: '請先選擇project',
+              timeout: 1200, position: 'top', progress: true, icon: 'warning' })" />
+          </template>
+          <q-fab-action v-else icon="hourglass_empty" color="grey" />
+        </q-fab>
+      </q-page-sticky>
     </q-page>
   </WebSocketComponent>
 </template>
@@ -62,27 +78,29 @@ const inputTitle = ref('Input')
 const outputTitle = ref('Output')
 const isInterpreterTypeLocked = ref(false)
 const executing = ref(false)
+const fab = ref(null)
 const currentProject = ref('')
+const waitTime = ref(50) 
+const interactionLog = ref('') // 新增交互紀錄的狀態
 
 const interpreterOptions = ['project1', 'project2', 'project3', 'project4']
 
 const sendCode = async (sendMessage) => {
   executing.value = true
-  code.value += '\n' // 添加換行符
-  input.value += code.value
-  const message = {
-    interpreterType: `OurScheme${currentProject.value}`,
-    payload: code.value,
+  const lines = code.value.split('\n')
+  for (const line of lines) {
+    input.value += line + '\n'
+    const message = {
+      interpreterType: `OurScheme${currentProject.value}`,
+      payload: line+'\n',
+    }
+    sendMessage(JSON.stringify(message))
+    interactionLog.value += `${line}\n` // 記錄發送的訊息
+    code.value = code.value.replace(line+'\n', '') // 移除已經發送的訊息
+    await new Promise(resolve => setTimeout(resolve, waitTime.value)) 
   }
-  sendMessage(JSON.stringify(message))
-  gtag('event', 'execute_code', {
-    event_category: 'Code Execution',
-    event_label: `OurScheme${currentProject.value}`,
-  })
   code.value = '' // 清空輸入程式碼
-  setTimeout(() => {
-    executing.value = false
-  }, 1000) // 模擬執行完成後的狀態變更
+  executing.value = false
 }
 
 const updateInput = (newInput) => {
@@ -91,6 +109,7 @@ const updateInput = (newInput) => {
 
 const updateOutput = (message) => {
   output.value += message // 將 WebSocket 回傳的訊息添加到 output
+  interactionLog.value += `${message}` // 記錄接收的訊息
 }
 
 const lockInterpreterType = () => {
@@ -102,14 +121,18 @@ const unlockInterpreterType = () => {
 }
 
 const clearInputOutput = () => {
+  code.value = ''
   input.value = ''
   output.value = ''
+  interactionLog.value = ''
 }
 
 const handleConnected = () => {
   lockInterpreterType()
   clearInputOutput()
-  input.value = '1\n' // 初始化輸入
+  input.value = '1\n' // 初始化輸入(TestNumber)
+  interactionLog.value = '1\n' // 初始化交互紀錄
+  fab.value.show()
   $q.notify({
     type: 'positive',
     message: '連線成功',
@@ -129,6 +152,23 @@ const handleDisconnected = () => {
     position: 'top',
     progress: true,
     icon: 'warning'
+  })
+}
+
+const confirmClearInputOutput = () => {
+  $q.dialog({
+    title: '確認',
+    message: '您確定要清除所有輸入和輸出嗎？',
+    ok: {
+      label: '確定',
+      color: 'red'
+    },
+    cancel: {
+      label: '取消',
+      color: 'primary'
+    }
+  }).onOk(() => {
+    clearInputOutput()
   })
 }
 </script>

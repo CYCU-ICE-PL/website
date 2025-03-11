@@ -34,5 +34,4 @@ quasar build
 - D3.js: 使用 D3.js 進行數據可視化
 
 ## 待改進
-- websocket 與 OurScheme module 分工不明確
-- 執行程式碼與可視化的操作邏輯有進步空間
+- 改成每次都必須接收到後端的ack才能發送下一個指令(避免指令過快)

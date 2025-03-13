@@ -33,19 +33,6 @@
           </q-btn-group>
         </div>
 
-        <div class="col-12">
-          <q-input
-            filled
-            v-model="code"
-            label="輸入程式碼"
-            type="textarea"
-            autogrow
-            class="q-mt-md"
-            :spellcheck="false"
-            :disable="!wsConnected || executing"
-          />
-        </div>
-
         <div class="col-6">
           <TextArea :initialText="input" :title="inputTitle" @update:text="updateInput" />
         </div>
@@ -54,7 +41,7 @@
         </div>
       </div>
 
-      <div style="max-width: 500px;">
+      <div style="max-width: 50vw">
         <q-badge color="pink" label="Preview⬇️" >
           <q-tooltip>間隔時間低於50ms可能會得到錯誤的交互結果</q-tooltip>
         </q-badge>
@@ -62,47 +49,59 @@
           <q-input filled v-model="interactionLog" type="textarea" autogrow readonly />
         </q-expansion-item>
       </div>
-
-      <q-page-sticky position="bottom-right" style="margin-top: 20px;">
-        <q-fab ref="fab" icon="settings" active-icon="close" direction="left" color="primary" :active="true">
-          <q-fab-action icon="delete" @click="confirmClearInputOutput" color="grey">
-            <q-tooltip anchor="bottom middle" self="top middle"> 清除 </q-tooltip>
-          </q-fab-action>
-          <q-fab-action v-if="wsConnected">
-            <q-slider
-              v-model="waitTime"
-              :min="0"
-              :max="1000"
-              :step="50"
-              label
-              :label-value="'送出間隔時間 ' + waitTime + 'ms'"
-              style="width: 50px;"
-            />
-          </q-fab-action>
-          <template v-if="!executing">
-            <q-fab-action v-if="wsConnected" icon="send" @click="sendCode(sendMessage)" color="green">
-              <q-tooltip anchor="bottom middle" self="top middle"> 送出 </q-tooltip>
-            </q-fab-action>
-            <q-fab-action
-              v-else
-              icon="hourglass_empty"
-              color="grey"
-              @click="
-                () =>
-                  $q.notify({
-                    type: 'warning',
-                    message: '請先選擇 project',
-                    timeout: 1200,
-                    position: 'top',
-                    progress: true,
-                    icon: 'warning',
-                  })
-              "
-            />
+      <q-space />
+      
+      <q-separator />
+      <q-input
+          filled
+          v-model="code"
+          label="輸入程式碼"
+          type="textarea"
+          autogrow
+          class="q-mt-md"
+          :spellcheck="false"
+          :disable="!wsConnected || executing"
+        >
+          <template v-slot:append>
+            <q-page-sticky position="bottom-right" >
+              <q-fab ref="fab" icon="settings" active-icon="close" direction="left" color="primary" :active="true">
+                <q-fab-action v-if="wsConnected">
+                  <q-slider
+                    v-model="waitTime"
+                    :min="0"
+                    :max="1000"
+                    :step="50"
+                    label
+                    :label-value="'送出間隔時間 ' + waitTime + 'ms'"
+                    style="width: 50px;"
+                  />
+                </q-fab-action>
+                <template v-if="!executing">
+                  <q-fab-action v-if="wsConnected" icon="send" @click="sendCode(sendMessage)" color="green">
+                    <q-tooltip anchor="bottom middle" self="top middle"> 送出 </q-tooltip>
+                  </q-fab-action>
+                  <q-fab-action
+                    v-else
+                    icon="hourglass_empty"
+                    color="grey"
+                    @click="
+                      () =>
+                        $q.notify({
+                          type: 'warning',
+                          message: '請先選擇 project',
+                          timeout: 1200,
+                          position: 'top',
+                          progress: true,
+                          icon: 'warning',
+                        })
+                    "
+                  />
+                </template>
+                <q-fab-action v-else icon="hourglass_empty" color="grey" />
+              </q-fab>
+            </q-page-sticky>
           </template>
-          <q-fab-action v-else icon="hourglass_empty" color="grey" />
-        </q-fab>
-      </q-page-sticky>
+        </q-input>
     </q-page>
   </WebSocketComponent>
 </template>
@@ -206,20 +205,4 @@ const handleDisconnected = () => {
   });
 };
 
-const confirmClearInputOutput = () => {
-  $q.dialog({
-    title: '確認',
-    message: '您確定要清除所有輸入和輸出嗎？',
-    ok: {
-      label: '確定',
-      color: 'red',
-    },
-    cancel: {
-      label: '取消',
-      color: 'primary',
-    },
-  }).onOk(() => {
-    clearInputOutput();
-  });
-};
 </script>

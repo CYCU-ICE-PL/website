@@ -62,46 +62,44 @@
           :spellcheck="false"
           :disable="!wsConnected || executing"
         >
-          <template v-slot:append>
-            <q-page-sticky position="bottom-right" >
-              <q-fab ref="fab" icon="settings" active-icon="close" direction="left" color="primary" :active="true">
-                <q-fab-action v-if="wsConnected">
-                  <q-slider
-                    v-model="waitTime"
-                    :min="0"
-                    :max="1000"
-                    :step="50"
-                    label
-                    :label-value="'送出間隔時間 ' + waitTime + 'ms'"
-                    style="width: 50px;"
-                  />
-                </q-fab-action>
-                <template v-if="!executing">
-                  <q-fab-action v-if="wsConnected" icon="send" @click="sendCode(sendMessage)" color="green">
-                    <q-tooltip anchor="bottom middle" self="top middle"> 送出 </q-tooltip>
-                  </q-fab-action>
-                  <q-fab-action
-                    v-else
-                    icon="hourglass_empty"
-                    color="grey"
-                    @click="
-                      () =>
-                        $q.notify({
-                          type: 'warning',
-                          message: '請先選擇 project',
-                          timeout: 1200,
-                          position: 'top',
-                          progress: true,
-                          icon: 'warning',
-                        })
-                    "
-                  />
-                </template>
-                <q-fab-action v-else icon="hourglass_empty" color="grey" />
-              </q-fab>
-            </q-page-sticky>
-          </template>
         </q-input>
+        <q-page-sticky position="bottom-right" >
+          <q-fab ref="fab" icon="settings" active-icon="close" direction="left" color="primary" :active="true">
+            <q-fab-action v-if="wsConnected">
+              <q-slider
+                v-model="waitTime"
+                :min="0"
+                :max="1000"
+                :step="50"
+                label
+                :label-value="'送出間隔時間 ' + waitTime + 'ms'"
+                style="width: 50px;"
+              />
+            </q-fab-action>
+            <template v-if="!executing">
+              <q-fab-action v-if="wsConnected" icon="send" @click="sendCode(sendMessage)" color="green">
+                <q-tooltip anchor="bottom middle" self="top middle"> 送出 </q-tooltip>
+              </q-fab-action>
+              <q-fab-action
+                v-else
+                icon="hourglass_empty"
+                color="grey"
+                @click="
+                  () =>
+                    $q.notify({
+                      type: 'warning',
+                      message: '請先選擇 project',
+                      timeout: 1200,
+                      position: 'top',
+                      progress: true,
+                      icon: 'warning',
+                    })
+                "
+              />
+            </template>
+            <q-fab-action v-else icon="hourglass_empty" color="grey" />
+          </q-fab>
+        </q-page-sticky>
     </q-page>
   </WebSocketComponent>
 </template>

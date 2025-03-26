@@ -1,57 +1,82 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="text-center">
-      <h1 class="title">關於</h1>
-      <p class="description">如果您喜歡這個網站，請不要忘記按個讚支持我們</p>
-      <p class="description">此網站的source code已開源在 GitHub 上，歡迎大家參與貢獻!</p>
-      <q-btn class="github-button" color="black" @click="navigateToGitHub">
-        <i class="fab fa-github"></i> GitHub
-      </q-btn>
-      <q-btn class="github-button" color="black" @click="navigateToStar">
-        <i class="fas fa-star"></i> 按讚
-        <q-badge color="grey" class="q-ml-sm">{{ starCount }}</q-badge>
-      </q-btn>
-      <q-btn class="github-button" color="black" @click="navigateToIssue">
-        <i class="fas fa-exclamation-triangle"></i> 問題回報
-      </q-btn>
-      <div v-if="contributors.length" class="contributors-list">
-        <q-toolbar class="contributors-title">
-          <q-toolbar-title>貢獻者名單</q-toolbar-title>
-        </q-toolbar>
-        <q-row>
-          <q-col v-for="contributor in contributors" :key="contributor.id" cols="12" sm="6" md="4">
-            <q-card>
-              <q-card-section class="row items-center">
-                <q-avatar>
-                  <img :src="contributor.avatar_url" :alt="contributor.login">
-                </q-avatar>
+    <div class="row justify-center">
+      <div class="col-12 col-md-8">
+        <q-card class="about-card shadow-2">
+          <q-card-section class="text-center">
+            <h1 class="text-h3 text-weight-bold q-mb-md">關於我們</h1>
+            <p class="text-h6 q-mb-md">如果您喜歡這個網站，請不要忘記按個讚支持我們</p>
+            <p class="text-h6 q-mb-xl">此網站的source code已開源在 GitHub 上，歡迎大家參與貢獻!</p>
+            
+            <div class="row justify-center q-gutter-md">
+              <q-btn
+                class="github-button"
+                color="dark"
+                icon="fab fa-github"
+                label="GitHub"
+                @click="navigateToGitHub"
+              />
+              <q-btn
+                class="github-button"
+                color="warning"
+                icon="fas fa-star"
+                :label="`按讚 ${starCount}`"
+                @click="navigateToStar"
+              />
+              <q-btn
+                class="github-button"
+                color="negative"
+                icon="fas fa-exclamation-triangle"
+                label="問題回報"
+                @click="navigateToIssue"
+              />
+            </div>
+          </q-card-section>
+        </q-card>
+
+        <q-card v-if="contributors.length" class="contributors-card shadow-2 q-mt-md">
+          <q-card-section>
+            <div class="text-h5 text-weight-bold q-mb-md">貢獻者名單</div>
+            <div class="row q-col-gutter-md">
+              <div v-for="contributor in contributors" :key="contributor.id" class="col-12 col-sm-6 col-md-4">
+                <q-card class="contributor-card" flat bordered>
+                  <q-card-section class="row items-center">
+                    <q-avatar size="48px">
+                      <img :src="contributor.avatar_url" :alt="contributor.login">
+                    </q-avatar>
+                    <div class="q-ml-md">
+                      <div class="text-weight-bold">
+                        <a :href="contributor.html_url" target="_blank" class="text-primary">{{ contributor.login }}</a>
+                      </div>
+                      <div class="text-caption text-grey">{{ contributor.name }}</div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+            </div>
+          </q-card-section>
+        </q-card>
+
+        <q-card v-if="commits.length" class="commits-card shadow-2 q-mt-md">
+          <q-card-section>
+            <div class="text-h5 text-weight-bold q-mb-md">最近提交紀錄</div>
+            <q-list separator>
+              <q-item v-for="commit in commits" :key="commit.sha" class="commit-item">
                 <q-item-section>
-                  <q-item-label>
-                    <a :href="contributor.html_url" target="_blank">{{ contributor.login }}</a>
+                  <q-item-label class="text-weight-medium">{{ commit.commit.message }}</q-item-label>
+                  <q-item-label caption class="text-grey">
+                    {{ commit.author.login }} - {{ formatDate(commit.commit.author.date) }}
                   </q-item-label>
-                  <q-item-label caption>{{ contributor.name }}</q-item-label>
                 </q-item-section>
-              </q-card-section>
-            </q-card>
-          </q-col>
-        </q-row>
+              </q-item>
+            </q-list>
+          </q-card-section>
+        </q-card>
+
+        <div class="text-center q-mt-md">
+          <p class="text-subtitle1 text-grey">Created by: Joe Liao</p>
+        </div>
       </div>
-      <div v-if="commits.length" class="commits-list">
-        <q-toolbar class="commits-title">
-          <q-toolbar-title>最近提交紀錄</q-toolbar-title>
-        </q-toolbar>
-        <q-list>
-          <q-item v-for="commit in commits" :key="commit.sha">
-            <q-item-section>
-              <q-item-label>{{ commit.commit.message }}</q-item-label>
-              <q-item-label caption>{{ commit.author.login }} - {{ formatDate(commit.commit.author.date) }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </div>
-    </div>
-    <div class="text-center">
-      <p class="createby">Created by: Joe Liao</p>
     </div>
   </q-page>
 </template>
@@ -125,75 +150,61 @@ const navigateToIssue = () => {
 </script>
 
 <style scoped>
-.text-center {
-  text-align: center;
-  padding: 2rem;
+.about-card {
+  border-radius: 16px;
+  transition: all 0.3s ease;
 }
 
-.title {
-  font-size: 2.5rem;
-  font-weight: 600;
-}
-
-.description {
-  font-size: 1.25rem;
-  margin: 1rem 0;
-}
-
-.createby {
-  font-size: 1rem;
-  margin: 1rem 0;
+.about-card:hover {
+  transform: translateY(-4px);
 }
 
 .github-button {
-  font-size: 1.2rem;
-  padding: 0.75rem 1.5rem;
-  color: white;
-  border-radius: 0.5rem;
-  transition: transform 0.3s ease-in-out;
-  text-transform: none;
-  margin: 0.5rem;
-  background-color: #333;
+  font-size: 1.1rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
-.github-button i {
-  margin-right: 0.5rem;
+.github-button:hover {
+  transform: translateY(-2px);
 }
 
-.contributors-list {
-  margin-top: 1rem;
-  text-align: left;
+.contributors-card,
+.commits-card {
+  border-radius: 16px;
+  transition: all 0.3s ease;
 }
 
-.contributors-title {
-  padding: 1rem;
-  margin-bottom: 1rem;
+.contributors-card:hover,
+.commits-card:hover {
+  transform: translateY(-4px);
+}
+
+.contributor-card {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.contributor-card:hover {
   background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #333;
 }
 
-.q-card {
-  display: flex;
-  align-items: center;
+.commit-item {
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
-.commits-list {
-  margin-top: 1rem;
-  text-align: left;
-}
-
-.commits-title {
-  padding: 1rem;
-  margin-bottom: 1rem;
+.commit-item:hover {
   background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #333;
+}
+
+a {
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #1976d2;
 }
 </style>

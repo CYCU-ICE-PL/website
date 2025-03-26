@@ -109,7 +109,7 @@ const moods = {
   },
   calm: {
     name: '平靜',
-    icon: 'sentiment_calm',
+    icon: 'spa',
     headerGradient: 'linear-gradient(135deg, #98FB98 0%, #90EE90 100%)',
     backgroundGradient: 'linear-gradient(135deg, #F0FFF0 0%, #E8F5E9 100%)',
     primaryColor: '#98FB98',
@@ -117,7 +117,7 @@ const moods = {
   },
   energetic: {
     name: '活力',
-    icon: 'sentiment_excited',
+    icon: 'wb_sunny',
     headerGradient: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
     backgroundGradient: 'linear-gradient(135deg, #FFF8DC 0%, #FFE4B5 100%)',
     primaryColor: '#FFD700',

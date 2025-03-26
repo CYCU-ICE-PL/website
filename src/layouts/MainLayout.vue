@@ -71,11 +71,11 @@
     </q-drawer>
 
     <q-page-container :style="{ background: moods[currentMood].backgroundGradient }">
-      <transition name="fade" mode="out-in">
-        <router-view v-slot="{ Component }">
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
           <component :is="Component" :class="{ 'page-transitioning': isPageTransitioning }" />
-        </router-view>
-      </transition>
+        </transition>
+      </router-view>
     </q-page-container>
   </q-layout>
 </template>

@@ -229,3 +229,59 @@ export const getQuote = () => {
     return quotes[index];
   }
 };
+
+// 開發者模式彩蛋
+export const activateDevMode = () => {
+  // 檢查是否已經在localStorage中設置了開發者模式
+  const isDevMode = localStorage.getItem('devMode') === 'true'
+  
+  if (!isDevMode) {
+    console.log('恭喜你解鎖了開發者模式彩蛋！')
+    localStorage.setItem('devMode', 'true')
+    
+    // 創建一個黑客風格的通知
+    const hackerNotification = document.createElement('div')
+    hackerNotification.innerHTML = `
+      <div style="font-family: monospace; color: #0f0; background-color: rgba(0, 0, 0, 0.85); padding: 20px; border-radius: 5px;">
+        <div style="font-size: 18px; margin-bottom: 10px;">>>> 開發者模式已啟動 <<<</div>
+        <div style="font-size: 14px; margin-bottom: 5px;">// 系統權限已提升</div>
+        <div style="font-size: 14px;">// 歡迎，資工系開發者</div>
+      </div>
+    `
+    hackerNotification.style.position = 'fixed'
+    hackerNotification.style.top = '30px'
+    hackerNotification.style.right = '30px'
+    hackerNotification.style.zIndex = '9999'
+    hackerNotification.style.animation = 'fadeInOut 5s forwards'
+    document.body.appendChild(hackerNotification)
+    
+    // 添加CSS動畫
+    const style = document.createElement('style')
+    style.textContent = `
+      @keyframes fadeInOut {
+        0% { opacity: 0; transform: translateY(-20px); }
+        10% { opacity: 1; transform: translateY(0); }
+        80% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 0; transform: translateY(20px); }
+      }
+    `
+    document.head.appendChild(style)
+    
+    // 清除通知
+    setTimeout(() => {
+      if (document.body.contains(hackerNotification)) {
+        document.body.removeChild(hackerNotification)
+      }
+    }, 5000)
+    
+    return true
+  } else {
+    console.log('開發者模式已經啟動過了')
+    return false
+  }
+}
+
+// 檢查開發者模式狀態
+export const isDevModeActive = () => {
+  return localStorage.getItem('devMode') === 'true'
+}

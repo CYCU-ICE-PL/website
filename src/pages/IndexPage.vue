@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="content-wrapper">
-      <img src="icons/favicon.svg" alt="Logo" class="logo" />
+      <img src="icons/favicon.svg" alt="Logo" class="logo" @click="handleLogoClick" />
       <h1 class="main-title">歡迎來到 PL 可視化</h1>
       <p class="description">中原大學資訊工程學系「程式語言」課程學習輔助工具，用於OurScheme和OurC的可視化和執行追蹤。</p>
       
@@ -32,8 +32,10 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const router = useRouter()
+const logoClickCount = ref(0)
 
 const navigateToOurScheme = () => {
 router.push('/OurScheme')
@@ -51,6 +53,48 @@ const navigateToAbout = () => {
 router.push('/About')
 }
 
+const handleLogoClick = () => {
+  logoClickCount.value++
+  
+  // 當用戶連續點擊5次時觸發彩蛋
+  if (logoClickCount.value === 5) {
+    // 重置計數器
+    logoClickCount.value = 0
+    
+    // 彩蛋效果
+    console.log('你發現了Logo點擊彩蛋！')
+    
+    // 創建並添加浮動元素
+    const easter = document.createElement('div')
+    easter.textContent = '你發現了隱藏彩蛋！'
+    easter.style.position = 'fixed'
+    easter.style.top = '50%'
+    easter.style.left = '50%'
+    easter.style.transform = 'translate(-50%, -50%)'
+    easter.style.padding = '20px'
+    easter.style.background = 'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)'
+    easter.style.color = 'white'
+    easter.style.fontSize = '24px'
+    easter.style.fontWeight = 'bold'
+    easter.style.borderRadius = '10px'
+    easter.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.2)'
+    easter.style.zIndex = '9999'
+    easter.style.animation = 'floatIn 1s ease, floatOut 1s ease 3s'
+    document.body.appendChild(easter)
+    
+    // 3秒後移除元素
+    setTimeout(() => {
+      document.body.removeChild(easter)
+    }, 4000)
+  }
+  
+  // 如果用戶10秒內沒有達到5次，重置計數器
+  setTimeout(() => {
+    if (logoClickCount.value < 5) {
+      logoClickCount.value = 0
+    }
+  }, 10000)
+}
 </script>
 
 <style scoped>
@@ -180,5 +224,27 @@ router.push('/About')
   0% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-10px) rotate(1deg); }
   100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes floatIn {
+  from { 
+    opacity: 0;
+    transform: translate(-50%, -100%);
+  }
+  to { 
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes floatOut {
+  from { 
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  to { 
+    opacity: 0;
+    transform: translate(-50%, 100%);
+  }
 }
 </style>

@@ -153,10 +153,15 @@ const navigateToIssue = () => {
 .about-card {
   border-radius: 16px;
   transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
 }
 
 .about-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
 .github-button {
@@ -164,30 +169,41 @@ const navigateToIssue = () => {
   padding: 0.5rem 1.5rem;
   border-radius: 8px;
   transition: all 0.3s ease;
+  background: linear-gradient(135deg, #8b9dc3 0%, #6b7b9c 100%);
+  color: white;
+  border: none;
 }
 
 .github-button:hover {
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .contributors-card,
 .commits-card {
   border-radius: 16px;
   transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
 }
 
 .contributors-card:hover,
 .commits-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
 .contributor-card {
   border-radius: 8px;
   transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .contributor-card:hover {
-  background-color: #f5f5f5;
+  background-color: rgba(245, 245, 245, 0.9);
+  transform: translateY(-2px);
 }
 
 .commit-item {
@@ -196,15 +212,29 @@ const navigateToIssue = () => {
 }
 
 .commit-item:hover {
-  background-color: #f5f5f5;
+  background-color: rgba(245, 245, 245, 0.9);
 }
 
 a {
   text-decoration: none;
   transition: color 0.3s ease;
+  color: #6b7b9c;
 }
 
 a:hover {
-  color: #1976d2;
+  color: #8b9dc3;
+}
+
+.text-h3 {
+  color: #2c3e50;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.text-h6 {
+  color: #4a5568;
+}
+
+.text-subtitle1 {
+  color: #718096;
 }
 </style>

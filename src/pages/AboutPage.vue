@@ -20,9 +20,12 @@
                 class="github-button"
                 color="warning"
                 icon="fas fa-star"
-                :label="`按讚 ${starCount}`"
+                :label="isLoading.stars ? '加載中...' : `按讚 ${starCount}`"
                 @click="navigateToStar"
-              />
+                :disable="isLoading.stars"
+              >
+                <q-spinner v-if="isLoading.stars" color="white" size="1em" />
+              </q-btn>
               <q-btn
                 class="github-button"
                 color="negative"
@@ -34,10 +37,13 @@
           </q-card-section>
         </q-card>
 
-        <q-card v-if="contributors.length" class="contributors-card shadow-2 q-mt-md">
+        <q-card v-if="!hasError.contributors && contributors.length" class="contributors-card shadow-2 q-mt-md">
           <q-card-section>
             <div class="text-h5 text-weight-bold q-mb-md">貢獻者名單</div>
-            <div class="row q-col-gutter-md">
+            <q-inner-loading :showing="isLoading.contributors">
+              <q-spinner-dots size="40px" color="primary" />
+            </q-inner-loading>
+            <div v-if="!isLoading.contributors" class="row q-col-gutter-md">
               <div v-for="contributor in contributors" :key="contributor.id" class="col-12 col-sm-6 col-md-4">
                 <q-card class="contributor-card" flat bordered>
                   <q-card-section class="row items-center">
@@ -57,15 +63,18 @@
           </q-card-section>
         </q-card>
 
-        <q-card v-if="commits.length" class="commits-card shadow-2 q-mt-md">
+        <q-card v-if="!hasError.commits && commits.length" class="commits-card shadow-2 q-mt-md">
           <q-card-section>
             <div class="text-h5 text-weight-bold q-mb-md">最近提交紀錄</div>
-            <q-list separator>
+            <q-inner-loading :showing="isLoading.commits">
+              <q-spinner-dots size="40px" color="primary" />
+            </q-inner-loading>
+            <q-list v-if="!isLoading.commits" separator>
               <q-item v-for="commit in commits" :key="commit.sha" class="commit-item">
                 <q-item-section>
                   <q-item-label class="text-weight-medium">{{ commit.commit.message }}</q-item-label>
                   <q-item-label caption class="text-grey">
-                    {{ commit.author.login }} - {{ formatDate(commit.commit.author.date) }}
+                    {{ commit.author?.login || 'Unknown' }} - {{ formatDate(commit.commit.author.date) }}
                   </q-item-label>
                 </q-item-section>
               </q-item>
@@ -83,45 +92,149 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
 
+const $q = useQuasar()
 const starCount = ref(0)
 const contributors = ref([])
 const commits = ref([])
+const isLoading = ref({
+  stars: false,
+  contributors: false,
+  commits: false
+})
+const hasError = ref({
+  stars: false,
+  contributors: false,
+  commits: false
+})
 
 const fetchStarCount = async () => {
+  isLoading.value.stars = true
+  hasError.value.stars = false
   try {
-    const response = await fetch('https://api.github.com/repos/CYCU-ICE-PL/website')
+    const response = await fetch('https://api.github.com/repos/CYCU-ICE-PL/website', {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    })
+    
+    if (!response.ok) {
+      throw new Error(`GitHub API 回應錯誤: ${response.status}`)
+    }
+    
     const data = await response.json()
-    starCount.value = data.stargazers_count
+    starCount.value = data.stargazers_count || 0
   } catch (error) {
     console.error('Error fetching star count:', error)
+    hasError.value.stars = true
+    $q.notify({
+      type: 'negative',
+      message: '無法載入 Star 數量',
+      position: 'top',
+      timeout: 3000
+    })
+  } finally {
+    isLoading.value.stars = false
   }
 }
 
 const fetchContributors = async () => {
+  isLoading.value.contributors = true
+  hasError.value.contributors = false
   try {
-    const response = await fetch('https://api.github.com/repos/CYCU-ICE-PL/website/contributors')
+    const response = await fetch('https://api.github.com/repos/CYCU-ICE-PL/website/contributors', {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    })
+    
+    if (!response.ok) {
+      throw new Error(`GitHub API 回應錯誤: ${response.status}`)
+    }
+    
     const data = await response.json()
-    contributors.value = await Promise.all(data.map(async (contributor) => {
-      const userResponse = await fetch(contributor.url)
-      const userData = await userResponse.json()
-      return {
-        ...contributor,
-        name: userData.name || 'N/A'
+    
+    if (!Array.isArray(data)) {
+      throw new Error('回傳的資料不是陣列格式')
+    }
+    
+    // 只處理前10個貢獻者以減少API請求
+    const topContributors = data.slice(0, 10)
+    
+    contributors.value = await Promise.all(topContributors.map(async (contributor) => {
+      try {
+        const userResponse = await fetch(contributor.url, {
+          headers: {
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        })
+        
+        if (!userResponse.ok) {
+          return {
+            ...contributor,
+            name: 'N/A'
+          }
+        }
+        
+        const userData = await userResponse.json()
+        return {
+          ...contributor,
+          name: userData.name || 'N/A'
+        }
+      } catch {
+        return {
+          ...contributor,
+          name: 'N/A'
+        }
       }
     }))
   } catch (error) {
     console.error('Error fetching contributors:', error)
+    hasError.value.contributors = true
+    $q.notify({
+      type: 'negative',
+      message: '無法載入貢獻者資訊',
+      position: 'top',
+      timeout: 3000
+    })
+  } finally {
+    isLoading.value.contributors = false
   }
 }
 
 const fetchCommits = async () => {
+  isLoading.value.commits = true
+  hasError.value.commits = false
   try {
-    const response = await fetch('https://api.github.com/repos/CYCU-ICE-PL/website/commits')
+    const response = await fetch('https://api.github.com/repos/CYCU-ICE-PL/website/commits', {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    })
+    
+    if (!response.ok) {
+      throw new Error(`GitHub API 回應錯誤: ${response.status}`)
+    }
+    
     const data = await response.json()
+    
+    if (!Array.isArray(data)) {
+      throw new Error('回傳的資料不是陣列格式')
+    }
+    
     commits.value = data.slice(0, 5) // 只顯示最新的5個提交紀錄
   } catch (error) {
     console.error('Error fetching commits:', error)
+    hasError.value.commits = true
+    $q.notify({
+      type: 'negative',
+      message: '無法載入提交紀錄',
+      position: 'top',
+      timeout: 3000
+    })
+  } finally {
+    isLoading.value.commits = false
   }
 }
 

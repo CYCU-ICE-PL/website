@@ -119,9 +119,4 @@ router.beforeEach((to, _, next) => {
   display: flex;
   align-items: center;
 }
-
-.github-stats {
-  display: flex;
-  align-items: center;
-}
 </style>

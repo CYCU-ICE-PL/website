@@ -135,7 +135,7 @@ const steps = ref([
     images: ['steps/step4-1.png'],
     tips: [
       '送出前請確認程式碼是否完整',
-      '系統會自動append \'\n\'到你的程式碼中'
+      '系統會自動append \'\\n\'到你的程式碼中'
     ]
   },
   {

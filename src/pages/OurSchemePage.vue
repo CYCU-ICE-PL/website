@@ -115,34 +115,6 @@
             />
           </q-card-section>
         </q-card>
-
-        <!-- 浮動操作按鈕 -->
-        <q-page-sticky position="bottom-right">
-          <q-fab ref="fab" icon="settings" active-icon="close" direction="left" color="primary" :active="true">
-            <template v-if="!executing">
-              <q-fab-action v-if="wsConnected" icon="send" @click="sendCode(sendMessage)" color="green">
-                <q-tooltip anchor="bottom middle" self="top middle">送出</q-tooltip>
-              </q-fab-action>
-              <q-fab-action
-                v-else
-                icon="hourglass_empty"
-                color="grey"
-                @click="
-                  () =>
-                    $q.notify({
-                      type: 'warning',
-                      message: '請先選擇 project',
-                      timeout: 1200,
-                      position: 'top',
-                      progress: true,
-                      icon: 'warning',
-                    })
-                "
-              />
-            </template>
-            <q-fab-action v-else icon="hourglass_empty" color="grey" />
-          </q-fab>
-        </q-page-sticky>
       </div>
     </q-page>
   </WebSocketComponent>
@@ -163,7 +135,6 @@ const inputTitle = ref('Input');
 const outputTitle = ref('Output');
 const isInterpreterTypeLocked = ref(false);
 const executing = ref(false);
-const fab = ref(null);
 const currentProject = ref('');
 const interactionLog = ref(''); // 交互紀錄狀態
 const interpreterOptions = ['project1', 'project2', 'project3', 'project4'];
@@ -206,7 +177,6 @@ const processNextLine = async () => {
   if (pendingLines.value.length === 0) {
     executing.value = false;
     isReady.value = true;
-    fab.value.show();
     return;
   }
 
@@ -226,7 +196,6 @@ const processNextLine = async () => {
     console.error('sendMessage is not available');
     executing.value = false;
     isReady.value = true;
-    fab.value.show();
     return;
   }
   
@@ -248,7 +217,6 @@ const updateOutput = (message) => {
       } else {
         executing.value = false;
         isReady.value = true;
-        fab.value.show();
       }
       return;
     } else if (parsedMessage.type === 'ack') {
@@ -290,7 +258,6 @@ const handleConnected = () => {
   isReady.value = true; // 初始化 ready 狀態
   pendingLines.value = []; // 清空待處理的行
   wsConnected.value = true; // 更新連線狀態
-  fab.value.show();
   $q.notify({
     type: 'positive',
     message: '連線成功',
@@ -546,54 +513,8 @@ const exportFiles = () => {
   background: rgba(255, 255, 255, 0.95);
 }
 
-:deep(.q-fab) {
-  background: linear-gradient(135deg, #8b9dc3 0%, #6b7b9c 100%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-:deep(.q-fab-action) {
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-:deep(.q-fab-action:hover) {
-  transform: scale(1.1);
-  background: rgba(255, 255, 255, 1);
-}
-
-:deep(.q-badge) {
-  font-size: 0.9rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-}
-
-:deep(.q-tooltip) {
-  background: rgba(44, 62, 80, 0.9);
-  backdrop-filter: blur(4px);
-  border-radius: 6px;
-  font-size: 0.9rem;
-  padding: 0.5rem 1rem;
-}
-
 :deep(.q-tab-panels) {
   background: transparent;
-}
-
-.export-btn {
-  position: fixed;
-  right: 20px;
-  top: 20px;
-  z-index: 1000;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.export-btn:hover {
-  transform: scale(1.1);
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .text-caption {

@@ -178,7 +178,7 @@ const handleProjectChange = async (project, connect, disconnect, wsConnected) =>
 const sendCode = async (sendMessage) => {
   executing.value = true;
   currentSendMessage.value = sendMessage; // 儲存 sendMessage 函數
-  const lines = code.value.split('\n').filter(line => line.trim() !== ''); // 過濾空行
+  const lines = code.value.split('\n'); // 移除空行過濾
   pendingLines.value = lines;
   code.value = ''; // 清空程式碼編輯器
   

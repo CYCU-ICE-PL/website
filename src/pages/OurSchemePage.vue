@@ -14,8 +14,8 @@
               v-for="option in interpreterOptions"
               :key="option"
               :label="option"
-              @click="() => { currentProject = option; connect(`OurScheme${option}`); }"
-              :disable="isInterpreterTypeLocked || connecting"
+              @click="() => handleProjectChange(option, connect, disconnect, wsConnected)"
+              :disable="connecting"
               :color="currentProject === option && wsConnected ? 'green' : 'grey'"
               class="project-btn"
             >
@@ -24,12 +24,9 @@
               </template>
               <template v-else>
                 <q-tooltip anchor="bottom right" self="top middle">
-                  {{ wsConnected && currentProject === option ? `已成功連線到 ${option}` : `選擇 ${option}` }}
+                  {{ wsConnected && currentProject === option ? `已連線到 ${option}` : `切換到 ${option}` }}
                 </q-tooltip>
               </template>
-            </q-btn>
-            <q-btn v-if="wsConnected" icon="link_off" @click="disconnect" color="red">
-              <q-tooltip anchor="bottom right" self="top middle">斷開連線</q-tooltip>
             </q-btn>
           </q-btn-group>
         </div>
@@ -142,6 +139,19 @@ const interactionLog = ref(''); // 交互紀錄狀態
 const interpreterOptions = ['project1', 'project2', 'project3', 'project4'];
 const sendlock = ref(false);
 
+const handleProjectChange = async (project, connect, disconnect, wsConnected) => {
+  if (currentProject.value === project) return;
+  
+  if (wsConnected) {
+    await disconnect();
+    // 等待斷開連接完成
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  
+  currentProject.value = project;
+  connect(`OurScheme${project}`);
+};
+
 const sendCode = async (sendMessage) => {
   executing.value = true;
   const lines = code.value.split('\n');
@@ -218,7 +228,6 @@ const handleDisconnected = () => {
     icon: 'warning',
   });
 };
-
 </script>
 
 <style scoped>

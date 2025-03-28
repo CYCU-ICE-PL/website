@@ -5,10 +5,11 @@
     @connected="handleConnected"
     @disconnected="handleDisconnected"
   >
-    <q-page class="q-pa-sm">
-      <div class="row q-col-gutter-md" style="text-align: center">
-        <div class="col-12">
-          <q-btn-group push>
+    <q-page class="q-pa-md">
+      <div class="scheme-container">
+        <!-- 頂部控制區域 -->
+        <div class="control-section q-mb-md">
+          <q-btn-group push spread>
             <q-btn
               v-for="option in interpreterOptions"
               :key="option"
@@ -16,7 +17,7 @@
               @click="() => { currentProject = option; connect(`OurScheme${option}`); }"
               :disable="isInterpreterTypeLocked || connecting"
               :color="currentProject === option && wsConnected ? 'green' : 'grey'"
-              style="text-transform: none;"
+              class="project-btn"
             >
               <template v-if="connecting && currentProject === option">
                 <q-spinner size="md" color="primary" />
@@ -28,42 +29,56 @@
               </template>
             </q-btn>
             <q-btn v-if="wsConnected" icon="link_off" @click="disconnect" color="red">
-              <q-tooltip anchor="bottom right" self="top middle"> 斷開連線 </q-tooltip>
+              <q-tooltip anchor="bottom right" self="top middle">斷開連線</q-tooltip>
             </q-btn>
           </q-btn-group>
         </div>
 
-        <div class="col-6">
-          <TextArea :initialText="input" :title="inputTitle" @update:text="updateInput" />
-        </div>
-        <div class="col-6">
-          <TextArea :initialText="output" :title="outputTitle" readonly />
-        </div>
-      </div>
+        <!-- 主要編輯區域 -->
+        <div class="row q-col-gutter-md">
+          <!-- 輸入區域 -->
+          <div class="col-12 col-md-6">
+            <TextArea :initialText="input" :title="inputTitle" @update:text="updateInput" />
+          </div>
 
-      <div style="max-width: 50vw">
-        <q-badge color="pink" label="Preview⬇️" >
-          <q-tooltip>間隔時間低於50ms可能會得到錯誤的交互結果</q-tooltip>
-        </q-badge>
-        <q-expansion-item icon="history" label="交互紀錄">
-          <q-input filled v-model="interactionLog" type="textarea" autogrow readonly />
-        </q-expansion-item>
-      </div>
-      <q-space />
-      
-      <q-separator />
-      <q-input
-          filled
-          v-model="code"
-          label="輸入程式碼"
-          type="textarea"
-          autogrow
-          class="q-mt-md"
-          :spellcheck="false"
-          :disable="!wsConnected || executing"
-        >
-        </q-input>
-        <q-page-sticky position="bottom-right" >
+          <!-- 輸出區域 -->
+          <div class="col-12 col-md-6">
+            <TextArea :initialText="output" :title="outputTitle" readonly />
+          </div>
+        </div>
+
+        <!-- 程式碼編輯區域 -->
+        <q-card class="code-editor-card q-mt-md">
+          <q-card-section>
+            <div class="text-h6 q-mb-md">程式碼編輯器</div>
+            <q-input
+              filled
+              v-model="code"
+              type="textarea"
+              autogrow
+              :spellcheck="false"
+              :disable="!wsConnected || executing"
+              class="code-input"
+            />
+          </q-card-section>
+        </q-card>
+
+        <!-- 交互紀錄區域 -->
+        <q-card class="interaction-card q-mt-md">
+          <q-card-section>
+            <div class="text-h6 q-mb-md">
+              交互紀錄
+              <q-badge color="pink" class="q-ml-sm">
+                Preview⬇️
+                <q-tooltip>間隔時間低於50ms可能會得到錯誤的交互結果</q-tooltip>
+              </q-badge>
+            </div>
+            <q-input filled v-model="interactionLog" type="textarea" autogrow readonly />
+          </q-card-section>
+        </q-card>
+
+        <!-- 浮動操作按鈕 -->
+        <q-page-sticky position="bottom-right">
           <q-fab ref="fab" icon="settings" active-icon="close" direction="left" color="primary" :active="true">
             <q-fab-action v-if="wsConnected">
               <q-slider
@@ -78,7 +93,7 @@
             </q-fab-action>
             <template v-if="!executing">
               <q-fab-action v-if="wsConnected" icon="send" @click="sendCode(sendMessage)" color="green">
-                <q-tooltip anchor="bottom middle" self="top middle"> 送出 </q-tooltip>
+                <q-tooltip anchor="bottom middle" self="top middle">送出</q-tooltip>
               </q-fab-action>
               <q-fab-action
                 v-else
@@ -100,6 +115,7 @@
             <q-fab-action v-else icon="hourglass_empty" color="grey" />
           </q-fab>
         </q-page-sticky>
+      </div>
     </q-page>
   </WebSocketComponent>
 </template>
@@ -204,3 +220,88 @@ const handleDisconnected = () => {
 };
 
 </script>
+
+<style scoped>
+.scheme-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.control-section {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.code-editor-card,
+.interaction-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.code-editor-card:hover,
+.interaction-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.project-btn {
+  text-transform: none;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.code-input {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+:deep(.q-card__section) {
+  padding: 1.5rem;
+}
+
+:deep(.q-input__control) {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+:deep(.q-input__control:hover) {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+:deep(.q-fab) {
+  background: linear-gradient(135deg, #8b9dc3 0%, #6b7b9c 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:deep(.q-fab-action) {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+:deep(.q-fab-action:hover) {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 1);
+}
+
+:deep(.q-badge) {
+  font-size: 0.9rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+}
+
+:deep(.q-tooltip) {
+  background: rgba(44, 62, 80, 0.9);
+  backdrop-filter: blur(4px);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+}
+</style>

@@ -367,6 +367,7 @@ const exportFiles = () => {
 <style scoped>
 .page-container {
   padding: 16px;
+  animation: fadeIn 0.5s ease-out;
 }
 
 @media (max-width: 599px) {
@@ -394,21 +395,32 @@ const exportFiles = () => {
 
 .code-editor-card,
 .interaction-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-@media (max-width: 599px) {
-  .code-editor-card,
-  .interaction-card {
-    border-radius: 0;
-    box-shadow: none;
-    border: none;
-  }
+.code-editor-card::before,
+.interaction-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #8b9dc3, #6b7b9c);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.code-editor-card:hover::before,
+.interaction-card:hover::before {
+  opacity: 1;
 }
 
 .code-editor-card:hover,
@@ -427,14 +439,16 @@ const exportFiles = () => {
   min-width: 80px;
   height: 36px;
   font-size: 0.9rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
 }
 
-@media (max-width: 599px) {
-  .project-btn {
-    min-width: 60px;
-    height: 32px;
-    font-size: 0.8rem;
-  }
+.project-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.3));
+  transform: translateY(-1px);
+}
+
+.project-btn:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .project-btn .q-spinner {
@@ -442,38 +456,17 @@ const exportFiles = () => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  color: #8b9dc3;
 }
 
 .project-btn .q-btn__content {
   position: relative;
   z-index: 1;
   padding: 0 8px;
-}
-
-@media (max-width: 599px) {
-  .project-btn .q-btn__content {
-    padding: 0 4px;
-  }
-}
-
-.project-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.project-btn:hover::before {
-  transform: translateX(100%);
-}
-
-.project-btn:active {
-  transform: scale(0.98);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 :deep(.q-btn-group) {
@@ -483,6 +476,8 @@ const exportFiles = () => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
 }
 
 :deep(.q-btn-group .q-btn) {
@@ -494,14 +489,24 @@ const exportFiles = () => {
   align-items: center;
   justify-content: center;
   font-size: 0.9rem;
+  position: relative;
+  overflow: hidden;
 }
 
-@media (max-width: 599px) {
-  :deep(.q-btn-group .q-btn) {
-    min-width: 60px;
-    height: 32px;
-    font-size: 0.8rem;
-  }
+:deep(.q-btn-group .q-btn::before) {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:deep(.q-btn-group .q-btn:hover::before) {
+  transform: translateX(100%);
 }
 
 :deep(.q-btn-group:hover) {
@@ -519,7 +524,7 @@ const exportFiles = () => {
 :deep(.q-btn--active) {
   position: relative;
   z-index: 1;
-  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
+  background: linear-gradient(45deg, rgba(139, 157, 195, 0.2), rgba(107, 123, 156, 0.2));
 }
 
 :deep(.q-btn--active::after) {
@@ -529,7 +534,7 @@ const exportFiles = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
+  background: linear-gradient(45deg, rgba(139, 157, 195, 0.3), rgba(107, 123, 156, 0.3));
   z-index: -1;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -542,52 +547,55 @@ const exportFiles = () => {
 .toggle-btn {
   padding: 0.5rem;
   border-radius: 8px;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 36px;
   height: 36px;
-}
-
-@media (max-width: 599px) {
-  .toggle-btn {
-    min-width: 32px;
-    height: 32px;
-    padding: 0.3rem;
-  }
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .toggle-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.98);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .toggle-btn:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
 
 .code-input {
   font-family: 'Consolas', 'Monaco', monospace;
   font-size: 1.1rem;
   line-height: 1.6;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  padding: 1rem;
 }
 
-:deep(.q-card__section) {
-  padding: 1.5rem;
-}
-
-@media (max-width: 599px) {
-  :deep(.q-card__section) {
-    padding: 0.75rem;
-  }
+.code-input:hover {
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 :deep(.q-input__control) {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(139, 157, 195, 0.2);
 }
 
 :deep(.q-input__control:hover) {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(139, 157, 195, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+:deep(.q-input__control:focus-within) {
+  border-color: rgba(139, 157, 195, 0.6);
+  box-shadow: 0 4px 12px rgba(139, 157, 195, 0.1);
 }
 
 :deep(.q-tab-panels) {
@@ -597,21 +605,39 @@ const exportFiles = () => {
 .text-caption {
   font-size: 0.8rem;
   line-height: 1.4;
+  color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .text-grey-7 {
   color: rgba(0, 0, 0, 0.7);
 }
 
-/* 新增 TextArea 相關樣式 */
 :deep(.text-area-container) {
   height: 100%;
   min-height: 200px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(139, 157, 195, 0.2);
+}
+
+:deep(.text-area-container:hover) {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(139, 157, 195, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 :deep(.text-area-title) {
   font-size: 1rem;
   margin-bottom: 0.5rem;
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 @media (max-width: 599px) {
@@ -623,5 +649,38 @@ const exportFiles = () => {
     font-size: 0.9rem;
     margin-bottom: 0.25rem;
   }
+}
+
+/* 新增動畫效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 新增滾動條樣式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 157, 195, 0.3);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 157, 195, 0.5);
 }
 </style>

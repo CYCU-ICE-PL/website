@@ -5,7 +5,7 @@
     @connected="handleConnected"
     @disconnected="handleDisconnected"
   >
-    <q-page class="q-pa-md">
+    <q-page class="page-container">
       <div class="scheme-container">
         <!-- 頂部控制區域 -->
         <div class="control-section q-mb-md">
@@ -68,12 +68,12 @@
           <q-tab-panel name="io">
             <div class="row q-col-gutter-md">
               <!-- 輸入區域 -->
-              <div class="col-12 col-md-6">
+              <div class="col-6">
                 <TextArea :initialText="input" :title="inputTitle" @update:text="updateInput" />
               </div>
 
               <!-- 輸出區域 -->
-              <div class="col-12 col-md-6">
+              <div class="col-6">
                 <TextArea :initialText="output" :title="outputTitle" readonly />
               </div>
             </div>
@@ -137,7 +137,7 @@ const isInterpreterTypeLocked = ref(false);
 const executing = ref(false);
 const currentProject = ref('');
 const interactionLog = ref(''); // 交互紀錄狀態
-const interpreterOptions = ['project1', 'project2', 'project3', 'project4'];
+const interpreterOptions = ['project1', 'project234'];
 const sendlock = ref(false);
 const activeTab = ref('io'); // 新增 tab 狀態
 const pendingLines = ref([]); // 待處理的程式碼行
@@ -155,7 +155,15 @@ const handleProjectChange = async (project, connect, disconnect, isConnected) =>
   }
   
   currentProject.value = project;
-  connect(`OurScheme${project}`);
+  // 根據選擇的專案決定要連接到哪個專案
+  if (project === 'project234') {
+    // 隨機選擇一個專案
+    const projects = ['project2', 'project3', 'project4'];
+    const randomProject = projects[Math.floor(Math.random() * projects.length)];
+    connect(`OurScheme${randomProject}`);
+  } else {
+    connect(`OurScheme${project}`);
+  }
 };
 
 const sendCode = async (sendMessage) => {
@@ -186,7 +194,9 @@ const processNextLine = async () => {
   input.value += line + '\n';
   
   const message = {
-    interpreterType: `OurScheme${currentProject.value}`,
+    interpreterType: currentProject.value === 'project234' 
+      ? `OurScheme${['project2', 'project3', 'project4'][Math.floor(Math.random() * 3)]}`
+      : `OurScheme${currentProject.value}`,
     payload: line + '\n',
   };
   
@@ -355,6 +365,16 @@ const exportFiles = () => {
 </script>
 
 <style scoped>
+.page-container {
+  padding: 16px;
+}
+
+@media (max-width: 599px) {
+  .page-container {
+    padding: 0;
+  }
+}
+
 .scheme-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -366,6 +386,12 @@ const exportFiles = () => {
   padding: 0.5rem 0;
 }
 
+@media (max-width: 599px) {
+  .control-section {
+    padding: 0.25rem 0;
+  }
+}
+
 .code-editor-card,
 .interaction-card {
   background: rgba(255, 255, 255, 0.95);
@@ -374,6 +400,15 @@ const exportFiles = () => {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
+}
+
+@media (max-width: 599px) {
+  .code-editor-card,
+  .interaction-card {
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+  }
 }
 
 .code-editor-card:hover,
@@ -389,8 +424,17 @@ const exportFiles = () => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  min-width: 100px;
-  height: 40px;
+  min-width: 80px;
+  height: 36px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 599px) {
+  .project-btn {
+    min-width: 60px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
 }
 
 .project-btn .q-spinner {
@@ -403,6 +447,13 @@ const exportFiles = () => {
 .project-btn .q-btn__content {
   position: relative;
   z-index: 1;
+  padding: 0 8px;
+}
+
+@media (max-width: 599px) {
+  .project-btn .q-btn__content {
+    padding: 0 4px;
+  }
 }
 
 .project-btn::before {
@@ -431,16 +482,26 @@ const exportFiles = () => {
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
+  width: 100%;
 }
 
 :deep(.q-btn-group .q-btn) {
   flex: 1;
-  min-width: 100px;
-  height: 40px;
+  min-width: 80px;
+  height: 36px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 599px) {
+  :deep(.q-btn-group .q-btn) {
+    min-width: 60px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
 }
 
 :deep(.q-btn-group:hover) {
@@ -482,6 +543,16 @@ const exportFiles = () => {
   padding: 0.5rem;
   border-radius: 8px;
   transition: all 0.3s ease;
+  min-width: 36px;
+  height: 36px;
+}
+
+@media (max-width: 599px) {
+  .toggle-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0.3rem;
+  }
 }
 
 .toggle-btn:hover {
@@ -501,6 +572,12 @@ const exportFiles = () => {
 
 :deep(.q-card__section) {
   padding: 1.5rem;
+}
+
+@media (max-width: 599px) {
+  :deep(.q-card__section) {
+    padding: 0.75rem;
+  }
 }
 
 :deep(.q-input__control) {
@@ -524,5 +601,27 @@ const exportFiles = () => {
 
 .text-grey-7 {
   color: rgba(0, 0, 0, 0.7);
+}
+
+/* 新增 TextArea 相關樣式 */
+:deep(.text-area-container) {
+  height: 100%;
+  min-height: 200px;
+}
+
+:deep(.text-area-title) {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 599px) {
+  :deep(.text-area-container) {
+    min-height: 150px;
+  }
+  
+  :deep(.text-area-title) {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
 }
 </style>

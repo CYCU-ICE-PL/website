@@ -102,17 +102,31 @@
               <q-icon name="keyboard" size="xs" class="q-mr-xs" />
               Enter 送出程式碼 | Shift + Enter 插入換行
             </div>
-            <q-input
-              filled
-              v-model="code"
-              type="textarea"
-              autogrow
-              :spellcheck="false"
-              :disable="!wsConnected"
-              class="code-input"
-              label="請在此輸入程式碼"
-              @keydown.enter.prevent="(event) => handleEnterKey(event, sendMessage)"
-            />
+            <div class="code-input-container">
+              <q-input
+                filled
+                v-model="code"
+                type="textarea"
+                autogrow
+                :spellcheck="false"
+                :disable="!wsConnected"
+                class="code-input"
+                label="請在此輸入程式碼"
+                @keydown.enter.prevent="(event) => handleEnterKey(event, sendMessage)"
+              />
+              <q-btn
+                color="green"
+                icon="send"
+                class="send-btn"
+                :disable="!wsConnected || executing"
+                @click="() => sendCode(sendMessage)"
+              >
+                <q-tooltip>送出程式碼</q-tooltip>
+                <template v-if="executing">
+                  <q-spinner size="sm" color="white" />
+                </template>
+              </q-btn>
+            </div>
           </q-card-section>
         </q-card>
       </div>
@@ -565,7 +579,14 @@ const exportFiles = () => {
   transform: translateY(0) scale(0.98);
 }
 
+.code-input-container {
+  position: relative;
+  display: flex;
+  gap: 8px;
+}
+
 .code-input {
+  flex: 1;
   font-family: 'Consolas', 'Monaco', monospace;
   font-size: 1.1rem;
   line-height: 1.6;
@@ -575,31 +596,43 @@ const exportFiles = () => {
   padding: 1rem;
 }
 
-.code-input:hover {
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-:deep(.q-input__control) {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 8px;
+.send-btn {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(139, 157, 195, 0.2);
+  background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
-:deep(.q-input__control:hover) {
-  background: rgba(255, 255, 255, 0.98);
-  border-color: rgba(139, 157, 195, 0.4);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.send-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
 }
 
-:deep(.q-input__control:focus-within) {
-  border-color: rgba(139, 157, 195, 0.6);
-  box-shadow: 0 4px 12px rgba(139, 157, 195, 0.1);
+.send-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.95);
 }
 
-:deep(.q-tab-panels) {
-  background: transparent;
+.send-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
+}
+
+@media (max-width: 599px) {
+  .send-btn {
+    width: 36px;
+    height: 36px;
+    right: 12px;
+    bottom: 12px;
+  }
 }
 
 .text-caption {

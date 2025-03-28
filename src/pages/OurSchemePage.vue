@@ -79,8 +79,7 @@
                 <div class="text-h6 q-mb-md">
                   交互紀錄
                   <q-badge color="pink" class="q-ml-sm">
-                    Preview⬇️
-                    <q-tooltip>間隔時間低於50ms可能會得到錯誤的交互結果</q-tooltip>
+                    Preview
                   </q-badge>
                 </div>
                 <q-input filled v-model="interactionLog" type="textarea" autogrow readonly />
@@ -98,9 +97,11 @@
               type="textarea"
               autogrow
               :spellcheck="false"
-              :disable="!wsConnected || executing"
+              :disable="!wsConnected"
               class="code-input"
               label="請在此輸入程式碼"
+              @keydown.enter.prevent="() => handleEnter(sendMessage)"
+              @keydown.shift.enter.prevent="handleShiftEnter"
             />
           </q-card-section>
         </q-card>
@@ -138,7 +139,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import { useQuasar } from 'quasar';
 import TextArea from 'components/TextArea.vue';
 import WebSocketComponent from 'components/WebsocketComponent.vue';
@@ -161,11 +162,12 @@ const activeTab = ref('io'); // 新增 tab 狀態
 const pendingLines = ref([]); // 待處理的程式碼行
 const isReady = ref(true); // 是否準備好接收下一行
 const currentSendMessage = ref(null); // 儲存當前的 sendMessage 函數
+const wsConnected = ref(false); // 新增 WebSocket 連線狀態
 
-const handleProjectChange = async (project, connect, disconnect, wsConnected) => {
+const handleProjectChange = async (project, connect, disconnect, isConnected) => {
   if (currentProject.value === project) return;
   
-  if (wsConnected) {
+  if (isConnected) {
     await disconnect();
     // 等待斷開連接完成
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -176,13 +178,15 @@ const handleProjectChange = async (project, connect, disconnect, wsConnected) =>
 };
 
 const sendCode = async (sendMessage) => {
+  if (!wsConnected.value || executing.value) return;
+  
   executing.value = true;
-  currentSendMessage.value = sendMessage; // 儲存 sendMessage 函數
-  const lines = code.value.split('\n'); // 移除空行過濾
+  isReady.value = true; // 確保初始狀態是 ready
+  currentSendMessage.value = sendMessage;
+  const lines = code.value.split('\n');
   pendingLines.value = lines;
   code.value = ''; // 清空程式碼編輯器
   
-  // 如果已經準備好，開始處理第一行
   if (isReady.value) {
     await processNextLine();
   }
@@ -191,6 +195,7 @@ const sendCode = async (sendMessage) => {
 const processNextLine = async () => {
   if (pendingLines.value.length === 0) {
     executing.value = false;
+    isReady.value = true;
     fab.value.show();
     return;
   }
@@ -198,22 +203,24 @@ const processNextLine = async () => {
   isReady.value = false;
   const line = pendingLines.value[0];
   
-  // 更新輸入區域
   input.value += line + '\n';
   
-  // 準備訊息
   const message = {
     interpreterType: `OurScheme${currentProject.value}`,
     payload: line + '\n',
   };
   
-  // 發送訊息
-  currentSendMessage.value(JSON.stringify(message));
+  if (typeof currentSendMessage.value === 'function') {
+    currentSendMessage.value(JSON.stringify(message));
+  } else {
+    console.error('sendMessage is not available');
+    executing.value = false;
+    isReady.value = true;
+    fab.value.show();
+    return;
+  }
   
-  // 更新交互紀錄
   interactionLog.value += `${line}\n`;
-  
-  // 移除已處理的行
   pendingLines.value.shift();
 };
 
@@ -223,15 +230,23 @@ const updateInput = (newInput) => {
 
 const updateOutput = (message) => {
   try {
-    // 嘗試解析訊息
     const parsedMessage = JSON.parse(message);
     if (parsedMessage.type === 'ready') {
-      // 後端準備好接收下一行
       isReady.value = true;
-      // 如果還有待處理的行，處理下一行
       if (pendingLines.value.length > 0) {
         processNextLine();
+      } else {
+        executing.value = false;
+        isReady.value = true;
+        fab.value.show();
       }
+      return;
+    } else if (parsedMessage.type === 'ack') {
+      // 如果是空 payload 的 ack，忽略它
+      if (!parsedMessage.payload) {
+        return;
+      }
+      // 其他 ack 訊息也忽略，讓 ready 訊息來處理狀態
       return;
     }
   } catch {
@@ -264,7 +279,7 @@ const handleConnected = () => {
   interactionLog.value = '1\n'; // 初始化交互紀錄
   isReady.value = true; // 初始化 ready 狀態
   pendingLines.value = []; // 清空待處理的行
-  currentSendMessage.value = null; // 重置 sendMessage
+  wsConnected.value = true; // 更新連線狀態
   fab.value.show();
   $q.notify({
     type: 'positive',
@@ -282,6 +297,7 @@ const handleDisconnected = () => {
   isReady.value = false; // 重置 ready 狀態
   pendingLines.value = []; // 清空待處理的行
   currentSendMessage.value = null; // 重置 sendMessage
+  wsConnected.value = false; // 更新連線狀態
   $q.notify({
     type: 'warning',
     message: '連線中斷',
@@ -289,6 +305,28 @@ const handleDisconnected = () => {
     position: 'top',
     progress: true,
     icon: 'warning',
+  });
+};
+
+const handleEnter = (sendMessage) => {
+  if (!wsConnected.value || executing.value) return;
+  if (typeof sendMessage === 'function') {
+    sendCode(sendMessage);
+  } else {
+    console.error('sendMessage is not available');
+  }
+};
+
+const handleShiftEnter = (event) => {
+  // 在游標位置插入換行
+  const textarea = event.target;
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  code.value = code.value.substring(0, start) + '\n' + code.value.substring(end);
+  
+  // 將游標移到新行的開始位置
+  nextTick(() => {
+    textarea.selectionStart = textarea.selectionEnd = start + 1;
   });
 };
 </script>

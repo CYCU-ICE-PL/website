@@ -263,6 +263,8 @@ const handleConnected = () => {
   input.value = '1\n'; // 初始化輸入 (TestNumber)
   interactionLog.value = '1\n'; // 初始化交互紀錄
   isReady.value = true; // 初始化 ready 狀態
+  pendingLines.value = []; // 清空待處理的行
+  currentSendMessage.value = null; // 重置 sendMessage
   fab.value.show();
   $q.notify({
     type: 'positive',
@@ -277,6 +279,9 @@ const handleDisconnected = () => {
   sendlock.value = true;
   unlockInterpreterType();
   currentProject.value = '';
+  isReady.value = false; // 重置 ready 狀態
+  pendingLines.value = []; // 清空待處理的行
+  currentSendMessage.value = null; // 重置 sendMessage
   $q.notify({
     type: 'warning',
     message: '連線中斷',

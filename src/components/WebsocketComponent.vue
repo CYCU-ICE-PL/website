@@ -23,7 +23,8 @@ const connect = async (interpreterType) => {
   console.log('interpreterType:', interpreterType)
   connecting.value = true
   await nextTick()
-  const wsUrl = `wss://visualpl.lab214b.uk:5001/`
+  // const wsUrl = `wss://visualpl.lab214b.uk:5001/`
+  const wsUrl=`ws:localhost:7090`
   socket = new WebSocket(wsUrl)
 
   const timeoutId = setTimeout(() => {

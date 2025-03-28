@@ -50,6 +50,13 @@
                 >
                   <q-tooltip>交互紀錄</q-tooltip>
                 </q-btn>
+                <q-btn
+                  icon="download"
+                  @click="exportFiles"
+                  class="toggle-btn"
+                >
+                  <q-tooltip>匯出檔案</q-tooltip>
+                </q-btn>
               </q-btn-group>
             </div>
           </div>
@@ -329,6 +336,51 @@ const handleShiftEnter = (event) => {
     textarea.selectionStart = textarea.selectionEnd = start + 1;
   });
 };
+
+const exportFiles = () => {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  
+  // 匯出 .in 檔案
+  const inBlob = new Blob([input.value], { type: 'text/plain' });
+  const inUrl = URL.createObjectURL(inBlob);
+  const inLink = document.createElement('a');
+  inLink.href = inUrl;
+  inLink.download = `input_${timestamp}.in`;
+  document.body.appendChild(inLink);
+  inLink.click();
+  document.body.removeChild(inLink);
+  URL.revokeObjectURL(inUrl);
+
+  // 匯出 .out 檔案
+  const outBlob = new Blob([output.value], { type: 'text/plain' });
+  const outUrl = URL.createObjectURL(outBlob);
+  const outLink = document.createElement('a');
+  outLink.href = outUrl;
+  outLink.download = `output_${timestamp}.out`;
+  document.body.appendChild(outLink);
+  outLink.click();
+  document.body.removeChild(outLink);
+  URL.revokeObjectURL(outUrl);
+
+  // 匯出交互紀錄
+  const logBlob = new Blob([interactionLog.value], { type: 'text/plain' });
+  const logUrl = URL.createObjectURL(logBlob);
+  const logLink = document.createElement('a');
+  logLink.href = logUrl;
+  logLink.download = `interaction_log_${timestamp}.txt`;
+  document.body.appendChild(logLink);
+  logLink.click();
+  document.body.removeChild(logLink);
+  URL.revokeObjectURL(logUrl);
+
+  $q.notify({
+    type: 'positive',
+    message: '檔案匯出成功',
+    timeout: 1200,
+    position: 'top',
+    progress: true,
+  });
+};
 </script>
 
 <style scoped>
@@ -463,6 +515,11 @@ const handleShiftEnter = (event) => {
 
 .toggle-btn:hover {
   background: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.toggle-btn:active {
+  transform: translateY(0);
 }
 
 .code-input {
@@ -517,5 +574,21 @@ const handleShiftEnter = (event) => {
 
 :deep(.q-tab-panels) {
   background: transparent;
+}
+
+.export-btn {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.export-btn:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 </style>

@@ -107,8 +107,7 @@
               :disable="!wsConnected"
               class="code-input"
               label="請在此輸入程式碼"
-              @keydown.enter.prevent="() => handleEnter(sendMessage)"
-              @keydown.shift.enter.prevent="handleShiftEnter"
+              @keydown.enter.prevent="(event) => handleEnterKey(event, sendMessage)"
             />
           </q-card-section>
         </q-card>
@@ -315,26 +314,27 @@ const handleDisconnected = () => {
   });
 };
 
-const handleEnter = (sendMessage) => {
-  if (!wsConnected.value || executing.value) return;
-  if (typeof sendMessage === 'function') {
-    sendCode(sendMessage);
+const handleEnterKey = (event, sendMessage) => {
+  if (event.shiftKey) {
+    // 如果是 Shift + Enter，插入換行
+    const textarea = event.target;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    code.value = code.value.substring(0, start) + '\n' + code.value.substring(end);
+    
+    // 將游標移到新行的開始位置
+    nextTick(() => {
+      textarea.selectionStart = textarea.selectionEnd = start + 1;
+    });
   } else {
-    console.error('sendMessage is not available');
+    // 如果是單純的 Enter，送出程式碼
+    if (!wsConnected.value || executing.value) return;
+    if (typeof sendMessage === 'function') {
+      sendCode(sendMessage);
+    } else {
+      console.error('sendMessage is not available');
+    }
   }
-};
-
-const handleShiftEnter = (event) => {
-  // 在游標位置插入換行
-  const textarea = event.target;
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-  code.value = code.value.substring(0, start) + '\n' + code.value.substring(end);
-  
-  // 將游標移到新行的開始位置
-  nextTick(() => {
-    textarea.selectionStart = textarea.selectionEnd = start + 1;
-  });
 };
 
 const exportFiles = () => {

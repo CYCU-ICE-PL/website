@@ -97,7 +97,11 @@
 
         <!-- 程式碼編輯區域 -->
         <q-card class="code-editor-card q-mt-md">
-          <q-card-section>
+          <q-card-section class="code-editor-section">
+            <div class="text-caption text-grey-7 q-mb-sm">
+              <q-icon name="keyboard" size="xs" class="q-mr-xs" />
+              Enter 送出程式碼 | Shift + Enter 插入換行
+            </div>
             <q-input
               filled
               v-model="code"
@@ -590,5 +594,14 @@ const exportFiles = () => {
   transform: scale(1.1);
   background: rgba(255, 255, 255, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.text-caption {
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.text-grey-7 {
+  color: rgba(0, 0, 0, 0.7);
 }
 </style>

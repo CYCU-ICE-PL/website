@@ -4,13 +4,13 @@
 const easterEggs = {
   'hackCycuIce': () => {
     console.log('%c恭喜你發現了控制台彩蛋！', 'color: green; font-size: 20px; font-weight: bold;');
-    console.log('%c輸入以下命令來啟用不同的彩蛋：', 'color: blue;');
+    console.log('%c輸入以下命令來啟用不同的彩蛋：', 'color: cyan;');
     console.log('%c- hackSystem(): 啟動系統破解模式', 'color: red; font-weight: bold;');
     console.log('%c- matrixEffect(): 觸發矩陣效果', 'color: purple;');
     console.log('%c- confettiParty(): 觸發五彩紙屑效果', 'color: purple;');
     console.log('%c- pixelMelt(): 觸發像素融化效果', 'color: orange;');
     console.log('%c- glitchScreen(): 觸發故障效果', 'color: cyan;');
-    console.log('%c- spaceFlight(): 啟動太空飛行', 'color: blue;');
+    console.log('%c- spaceFlight(): 啟動太空飛行', 'color: cyan;');
     console.log('%c- nyanCat(): 彩虹貓彩蛋', 'color: deeppink;');
     return '已解鎖控制台彩蛋命令！';
   },

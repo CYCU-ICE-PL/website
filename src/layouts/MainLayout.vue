@@ -88,7 +88,9 @@ const router = useRouter()
 const drawer = ref(false)
 const currentPageTitle = ref('')
 const isPageTransitioning = ref(false)
-const currentMood = ref('default')
+
+// 從 localStorage 載入主題，若無則預設為 'default'
+const currentMood = ref(localStorage.getItem('currentMood') || 'default')
 
 const moods = {
   default: {
@@ -131,7 +133,10 @@ const toggleMood = () => {
   const currentIndex = moodKeys.indexOf(currentMood.value)
   const nextIndex = (currentIndex + 1) % moodKeys.length
   currentMood.value = moodKeys[nextIndex]
-  
+
+  // 儲存到 localStorage
+  localStorage.setItem('currentMood', currentMood.value)
+
   setTimeout(() => {
     isPageTransitioning.value = false
     gtag('event', 'change_mood', {

@@ -104,14 +104,14 @@ const handleLogoClick = () => {
   justify-content: center;
   align-items: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%);
+  background: transparent; /* 將背景設為透明 */
 }
 
 .content-wrapper {
   max-width: 800px;
   text-align: center;
   padding: 3rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: transparent; /* 將背景設為透明 */
   border-radius: 30px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(20px);

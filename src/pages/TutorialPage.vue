@@ -187,7 +187,6 @@ const showImagePreview = (image) => {
 .text-center {
   text-align: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%);
   min-height: 100vh;
 }
 

@@ -1,33 +1,35 @@
 <template>
-  <div class="container">
-    <div class="content-wrapper">
-      <img src="icons/favicon.svg" alt="Logo" class="logo" @click="handleLogoClick" />
-      <h1 class="main-title">歡迎來到 PL 可視化</h1>
-      <p class="description">中原大學資訊工程學系「程式語言」課程學習輔助工具，用於OurScheme和OurC的可視化和執行追蹤。</p>
-      
-      <div class="button-group">
-        <q-btn class="action-btn primary" @click="navigateToOurScheme">
-          <q-icon name="code" class="btn-icon" />
-          OurScheme
-        </q-btn>
-        <q-btn class="action-btn primary" @click="navigateToOurC">
-          <q-icon name="code" class="btn-icon" />
-          OurC
-        </q-btn>
-      </div>
+  <q-page class="flex flex-center q-pa-md">
+    <q-card class="welcome-card">
+      <q-card-section class="text-center">
+        <img src="icons/favicon.svg" alt="Logo" class="logo" @click="handleLogoClick" />
+        <h1 class="main-title">歡迎來到 PL 可視化</h1>
+        <p class="description">中原大學資訊工程學系「程式語言」課程學習輔助工具，用於OurScheme和OurC的可視化和執行追蹤。</p>
+        
+        <div class="button-group">
+          <q-btn class="action-btn primary" @click="navigateToOurScheme">
+            <q-icon name="code" class="btn-icon" />
+            OurScheme
+          </q-btn>
+          <q-btn class="action-btn primary" @click="navigateToOurC">
+            <q-icon name="code" class="btn-icon" />
+            OurC
+          </q-btn>
+        </div>
 
-      <div class="button-group">
-        <q-btn class="action-btn secondary" @click="navigateToTutorial">
-          <q-icon name="school" class="btn-icon" />
-          教學
-        </q-btn>
-        <q-btn class="action-btn secondary" @click="navigateToAbout">
-          <q-icon name="info" class="btn-icon" />
-          關於
-        </q-btn>
-      </div>
-    </div>
-  </div>
+        <div class="button-group">
+          <q-btn class="action-btn secondary" @click="navigateToTutorial">
+            <q-icon name="school" class="btn-icon" />
+            教學
+          </q-btn>
+          <q-btn class="action-btn secondary" @click="navigateToAbout">
+            <q-icon name="info" class="btn-icon" />
+            關於
+          </q-btn>
+        </div>
+      </q-card-section>
+    </q-card>
+  </q-page>
 </template>
 
 <script setup>
@@ -98,25 +100,21 @@ const handleLogoClick = () => {
 </script>
 
 <style scoped>
-.container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  background: transparent; /* 將背景設為透明 */
-}
-
-.content-wrapper {
+.welcome-card {
   max-width: 800px;
-  text-align: center;
   padding: 3rem;
-  background: transparent; /* 將背景設為透明 */
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 30px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.5);
   animation: fadeIn 1.2s ease-out;
+  transition: all 0.3s ease;
+}
+
+.welcome-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
 .logo {

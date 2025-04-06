@@ -15,6 +15,10 @@
             <q-icon name="code" class="btn-icon" />
             OurC
           </q-btn>
+          <q-btn class="action-btn primary" @click="navigateToVisualize">
+            <q-icon name="visibility" class="btn-icon" />
+            可視化
+          </q-btn>
         </div>
 
         <div class="button-group">
@@ -45,6 +49,10 @@ router.push('/OurScheme')
 
 const navigateToOurC = () => {
 router.push('/OurC')
+}
+
+const navigateToVisualize = () => {
+router.push('/Visualize')
 }
 
 const navigateToTutorial = () => {

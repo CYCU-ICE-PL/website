@@ -219,12 +219,27 @@ const specialQuotes = [ // 特別名言
 export const getQuote = () => {
   const random = Math.random();
   console.log("你發現了一個彩蛋！"); 
-  if (random < 0.07) { // 有 7% 的機率出現特別名言
+  if (random < 0.000001) { // 有 0.0001% 的機率出現特別名言
     console.log("恭喜你發現了一個特別名言！");
     const index = Math.floor(Math.random() * specialQuotes.length);
     return specialQuotes[index];
   } else {
     console.log("T^T 沒有特別名言");
+    const index = Math.floor(Math.random() * quotes.length);
+    return quotes[index];
+  }
+};
+
+// Easter Page 專用的名言函數，有 50% 機率出現特別名言
+export const getEasterPageQuote = () => {
+  const random = Math.random();
+  console.log("彩蛋頁面發現了一個彩蛋！"); 
+  if (random < 0.5) { // 有 50% 的機率出現特別名言
+    console.log("恭喜你在彩蛋頁面發現了一個特別名言！");
+    const index = Math.floor(Math.random() * specialQuotes.length);
+    return specialQuotes[index];
+  } else {
+    console.log("彩蛋頁面顯示一般名言");
     const index = Math.floor(Math.random() * quotes.length);
     return quotes[index];
   }

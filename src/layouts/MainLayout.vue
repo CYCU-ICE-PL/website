@@ -34,6 +34,12 @@
             </q-item-section>
             <q-item-section>首頁</q-item-section>
           </q-item>
+          <q-item to="/Discussion" clickable class="drawer-item">
+            <q-item-section avatar>
+              <q-icon name="forum" />
+            </q-item-section>
+            <q-item-section>討論</q-item-section>
+          </q-item>
           <q-separator />
           <q-item to="/OurScheme" clickable class="drawer-item">
             <q-item-section avatar>

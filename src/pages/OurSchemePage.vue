@@ -333,7 +333,14 @@ const handleEnterKey = (event, sendMessage) => {
 };
 
 const exportFiles = () => {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const timestamp = new Date().toLocaleString('zh-TW', {
+    timeZone: 'Asia/Taipei',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }).replace(/[/\s:]/g, '-');
   
   // 匯出 .in 檔案
   const inBlob = new Blob([input.value], { type: 'text/plain' });

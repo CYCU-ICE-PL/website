@@ -1,5 +1,4 @@
-<template>
-  <q-page class="q-pa-md">
+<template>  <q-page class="q-pa-md">
     <div class="row justify-center">
       <div class="col-12 col-md-8">
         <q-card class="about-card shadow-2">
@@ -8,7 +7,7 @@
             <p class="text-h6 q-mb-md">如果您喜歡這個網站，請不要忘記按個讚支持我們</p>
             <p class="text-h6 q-mb-xl">此網站的source code已開源在 GitHub 上，歡迎大家參與貢獻!</p>
             
-            <div class="row justify-center q-gutter-md">
+            <div class="row justify-center q-gutter-md q-mb-lg">
               <q-btn
                 class="github-button"
                 color="dark"
@@ -35,52 +34,92 @@
               />
             </div>
           </q-card-section>
-        </q-card>
-
-        <q-card v-if="!hasError.contributors && contributors.length" class="contributors-card shadow-2 q-mt-md">
-          <q-card-section>
-            <div class="text-h5 text-weight-bold q-mb-md">貢獻者名單</div>
-            <q-inner-loading :showing="isLoading.contributors">
-              <q-spinner-dots size="40px" color="primary" />
-            </q-inner-loading>
-            <div v-if="!isLoading.contributors" class="row q-col-gutter-md">
-              <div v-for="contributor in contributors" :key="contributor.id" class="col-12 col-sm-6 col-md-4">
-                <q-card class="contributor-card" flat bordered>
-                  <q-card-section class="row items-center">
-                    <q-avatar size="48px">
-                      <img :src="contributor.avatar_url" :alt="contributor.login">
-                    </q-avatar>
-                    <div class="q-ml-md">
-                      <div class="text-weight-bold">
-                        <a :href="contributor.html_url" target="_blank" class="text-primary">{{ contributor.login }}</a>
-                      </div>
-                      <div class="text-caption text-grey">{{ contributor.name }}</div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </div>
+        </q-card>        <!-- 相關工具區塊 -->
+        <q-card class="tools-card shadow-1 q-mt-md">
+          <q-card-section class="q-pa-md">
+            <div class="text-h6 text-weight-bold q-mb-sm text-center">
+              <q-icon name="fas fa-tools" size="sm" class="q-mr-xs" />
+              相關工具
             </div>
-          </q-card-section>
+            <div class="row justify-center">
+              <div class="col-auto">
+                <q-chip
+                  class="tool-chip"
+                  color="primary"
+                  text-color="white"
+                  icon="fas fa-code"
+                  clickable
+                  @click="navigateToCodeJudge"
+                >
+                  Simple Code Judge
+                  <q-tooltip class="bg-primary text-body2">
+                    簡易程式碼判題系統 - 輕量級的程式碼評測平台
+                  </q-tooltip>
+                </q-chip>
+              </div>
+            </div>          </q-card-section>
         </q-card>
 
-        <q-card v-if="!hasError.commits && commits.length" class="commits-card shadow-2 q-mt-md">
-          <q-card-section>
-            <div class="text-h5 text-weight-bold q-mb-md">最近提交紀錄</div>
-            <q-inner-loading :showing="isLoading.commits">
-              <q-spinner-dots size="40px" color="primary" />
-            </q-inner-loading>
-            <q-list v-if="!isLoading.commits" separator>
-              <q-item v-for="commit in commits" :key="commit.sha" class="commit-item">
-                <q-item-section>
-                  <q-item-label class="text-weight-medium">{{ commit.commit.message }}</q-item-label>
-                  <q-item-label caption class="text-grey">
-                    {{ commit.author?.login || 'Unknown' }} - {{ formatDate(commit.commit.author.date) }}
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
-        </q-card>
+        <!-- 貢獻者和提交記錄並排顯示 -->
+        <div class="row q-col-gutter-md q-mt-md">
+          <div class="col-12 col-lg-6">
+            <q-card v-if="!hasError.contributors && contributors.length" class="contributors-card shadow-2 full-height">
+              <q-card-section class="full-height">
+                <div class="text-h5 text-weight-bold q-mb-md">
+                  <q-icon name="fas fa-users" class="q-mr-sm" />
+                  貢獻者名單
+                </div>
+                <q-inner-loading :showing="isLoading.contributors">
+                  <q-spinner-dots size="40px" color="primary" />
+                </q-inner-loading>
+                <div v-if="!isLoading.contributors" class="row q-col-gutter-sm">
+                  <div v-for="contributor in contributors" :key="contributor.id" class="col-12 col-sm-6">
+                    <q-card class="contributor-card" flat bordered>
+                      <q-card-section class="row items-center q-pa-sm">
+                        <q-avatar size="40px">
+                          <img :src="contributor.avatar_url" :alt="contributor.login">
+                        </q-avatar>
+                        <div class="q-ml-sm">
+                          <div class="text-weight-bold text-body2">
+                            <a :href="contributor.html_url" target="_blank" class="text-primary">{{ contributor.login }}</a>
+                          </div>
+                          <div class="text-caption text-grey">{{ contributor.name }}</div>
+                        </div>
+                      </q-card-section>
+                    </q-card>
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <q-card v-if="!hasError.commits && commits.length" class="commits-card shadow-2 full-height">
+              <q-card-section class="full-height">
+                <div class="text-h5 text-weight-bold q-mb-md">
+                  <q-icon name="fas fa-code-branch" class="q-mr-sm" />
+                  最近提交紀錄
+                </div>
+                <q-inner-loading :showing="isLoading.commits">
+                  <q-spinner-dots size="40px" color="primary" />
+                </q-inner-loading>
+                <q-list v-if="!isLoading.commits" separator class="rounded-borders">
+                  <q-item v-for="commit in commits" :key="commit.sha" class="commit-item q-pa-sm">
+                    <q-item-section>
+                      <q-item-label class="text-weight-medium text-body2">{{ commit.commit.message }}</q-item-label>
+                      <q-item-label caption class="text-grey">
+                        <q-icon name="fas fa-user" size="xs" class="q-mr-xs" />
+                        {{ commit.author?.login || 'Unknown' }} - 
+                        <q-icon name="fas fa-clock" size="xs" class="q-ml-xs q-mr-xs" />
+                        {{ formatDate(commit.commit.author.date) }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-card-section>
+            </q-card>
+          </div>
+        </div>
 
         <div class="text-center q-mt-md">
           <p class="text-subtitle1 text-grey">Created by: Joe Liao</p>
@@ -260,6 +299,10 @@ const navigateToStar = () => {
 const navigateToIssue = () => {
   window.open('https://github.com/CYCU-ICE-PL/website/issues', '_blank')
 }
+
+const navigateToCodeJudge = () => {
+  window.open('https://github.com/0857boy/simple-code-judge', '_blank')
+}
 </script>
 
 <style scoped>
@@ -293,7 +336,8 @@ const navigateToIssue = () => {
 }
 
 .contributors-card,
-.commits-card {
+.commits-card,
+.tools-card {
   border-radius: 16px;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.95);
@@ -306,6 +350,24 @@ const navigateToIssue = () => {
 .commits-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.tools-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.tool-chip {
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.tool-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
 }
 
 .contributor-card {
@@ -349,5 +411,9 @@ a:hover {
 
 .text-subtitle1 {
   color: #718096;
+}
+
+.full-height {
+  height: 100%;
 }
 </style>

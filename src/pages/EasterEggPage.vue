@@ -7,12 +7,15 @@
           <div class="egg-title text-gradient">🎉 恭喜你發現了隱藏頁面！ 🎉</div>
           <div class="egg-description">
             <p>你是如何找到這個頁面的？你一定是個善於探索的人！</p>
-            <p class="text-primary">這是一個<span class="text-bold">只有中原資工PL可視化專用</span>的秘密頁面，歡迎你的到來！</p>
+            <p class="text-primary">
+              這是一個<span class="text-bold">只有中原資工PL可視化專用</span
+              >的秘密頁面，歡迎你的到來！
+            </p>
           </div>
         </q-card-section>
         <div class="floating-dots"></div>
       </q-card>
-      
+
       <!-- 貪吃蛇遊戲區塊 -->
       <q-card class="game-card q-mb-lg">
         <q-card-section>
@@ -22,14 +25,16 @@
             </div>
           </div>
           <q-separator color="primary" size="2px" spaced />
-          <p class="text-body1 text-center q-my-md text-grey-7">使用方向鍵控制蛇的移動方向，吃到食物可以增加分數和長度。</p>
-          
+          <p class="text-body1 text-center q-my-md text-grey-7">
+            使用方向鍵控制蛇的移動方向，吃到食物可以增加分數和長度。
+          </p>
+
           <div v-if="!gameStarted" class="text-center q-pa-md game-start-container">
-            <q-btn 
-              color="primary" 
-              class="start-btn" 
-              label="開始遊戲" 
-              @click="startGame" 
+            <q-btn
+              color="primary"
+              class="start-btn"
+              label="開始遊戲"
+              @click="startGame"
               size="lg"
               unelevated
               rounded
@@ -41,29 +46,29 @@
           <div v-else class="text-center">
             <div class="canvas-container">
               <canvas ref="gameCanvas" width="300" height="300" class="game-canvas"></canvas>
-              <div class="game-overlay" :class="{'pause-overlay': isPaused}">
+              <div class="game-overlay" :class="{ 'pause-overlay': isPaused }">
                 <div v-if="isPaused" class="pause-text">暫停中</div>
               </div>
             </div>
             <div class="q-mt-md">
               <div class="text-h5 q-mb-md score-display">
-                <span class="score-label">分數:</span> 
+                <span class="score-label">分數:</span>
                 <span class="score-value">{{ score }}</span>
               </div>
               <div class="row justify-center q-gutter-md">
-                <q-btn 
-                  :color="isPaused ? 'positive' : 'warning'" 
-                  :icon="isPaused ? 'play_arrow' : 'pause'" 
-                  :label="isPaused ? '繼續' : '暫停'" 
-                  @click="togglePause" 
+                <q-btn
+                  :color="isPaused ? 'positive' : 'warning'"
+                  :icon="isPaused ? 'play_arrow' : 'pause'"
+                  :label="isPaused ? '繼續' : '暫停'"
+                  @click="togglePause"
                   rounded
                   unelevated
                 />
-                <q-btn 
-                  color="negative" 
-                  icon="refresh" 
-                  label="重新開始" 
-                  @click="resetGame" 
+                <q-btn
+                  color="negative"
+                  icon="refresh"
+                  label="重新開始"
+                  @click="resetGame"
                   rounded
                   unelevated
                 />
@@ -72,7 +77,7 @@
           </div>
         </q-card-section>
       </q-card>
-      
+
       <!-- 神秘格言區塊 -->
       <q-card class="quote-card q-mb-lg">
         <q-card-section>
@@ -82,16 +87,26 @@
           <q-separator color="secondary" size="2px" spaced />
           <q-card class="quote-box q-my-lg" flat bordered>
             <q-card-section class="text-center text-italic q-pa-lg">
-              <q-icon name="format_quote" size="24px" color="secondary" class="absolute-top-left q-ma-sm flip-icon" />
+              <q-icon
+                name="format_quote"
+                size="24px"
+                color="secondary"
+                class="absolute-top-left q-ma-sm flip-icon"
+              />
               <div class="quote-text">{{ randomQuote }}</div>
-              <q-icon name="format_quote" size="24px" color="secondary" class="absolute-bottom-right q-ma-sm rotate-180 flip-icon" />
+              <q-icon
+                name="format_quote"
+                size="24px"
+                color="secondary"
+                class="absolute-bottom-right q-ma-sm rotate-180 flip-icon"
+              />
             </q-card-section>
           </q-card>
           <div class="text-center">
-            <q-btn 
-              color="secondary" 
-              label="換一句" 
-              @click="getNewQuote" 
+            <q-btn
+              color="secondary"
+              label="換一句"
+              @click="getNewQuote"
               icon="autorenew"
               class="refresh-quote-btn"
               unelevated
@@ -101,13 +116,13 @@
           </div>
         </q-card-section>
       </q-card>
-      
+
       <!-- 返回區塊 -->
       <div class="text-center q-mt-xl">
-        <q-btn 
-          to="/" 
-          color="primary" 
-          label="返回首頁" 
+        <q-btn
+          to="/"
+          color="primary"
+          label="返回首頁"
           icon="home"
           class="return-btn"
           rounded
@@ -120,7 +135,7 @@
   </q-page>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { getEasterPageQuote } from 'src/data/quotes'
 
@@ -142,10 +157,10 @@ let gameSpeed = 100
 onMounted(() => {
   // 獲取一個隨機名言
   randomQuote.value = getEasterPageQuote()
-  
+
   // 在控制台輸出彩蛋訊息
   console.log('你找到了隱藏頁面彩蛋！')
-  
+
   // 監聽鍵盤事件
   window.addEventListener('keydown', handleKeyDown)
 })
@@ -168,7 +183,7 @@ const startGame = () => {
   gameStarted.value = true
   score.value = 0
   isPaused.value = false
-  
+
   // 在下一個 tick 初始化遊戲
   setTimeout(() => {
     initGame()
@@ -177,28 +192,28 @@ const startGame = () => {
 
 const initGame = () => {
   if (!gameCanvas.value) return
-  
+
   // 獲取 canvas 上下文
   ctx = gameCanvas.value.getContext('2d')
-  
+
   // 初始化蛇
   snake = [
     { x: 150, y: 150 },
     { x: 140, y: 150 },
-    { x: 130, y: 150 }
+    { x: 130, y: 150 },
   ]
-  
+
   // 隨機放置食物
   generateFood()
-  
+
   // 設定方向
   direction = 'right'
-  
+
   // 開始遊戲循環
   if (gameLoop) {
     clearInterval(gameLoop)
   }
-  
+
   gameLoop = setInterval(() => {
     if (!isPaused.value) {
       moveSnake()
@@ -212,9 +227,9 @@ const generateFood = () => {
   // 生成隨機食物位置，確保對齊網格
   food = {
     x: Math.floor(Math.random() * (gameCanvas.value.width / cellSize)) * cellSize,
-    y: Math.floor(Math.random() * (gameCanvas.value.height / cellSize)) * cellSize
+    y: Math.floor(Math.random() * (gameCanvas.value.height / cellSize)) * cellSize,
   }
-  
+
   // 確保食物不在蛇身上
   for (let i = 0; i < snake.length; i++) {
     if (snake[i].x === food.x && snake[i].y === food.y) {
@@ -227,7 +242,7 @@ const generateFood = () => {
 const moveSnake = () => {
   // 根據方向移動蛇頭
   const head = { x: snake[0].x, y: snake[0].y }
-  
+
   switch (direction) {
     case 'up':
       head.y -= cellSize
@@ -242,10 +257,10 @@ const moveSnake = () => {
       head.x += cellSize
       break
   }
-  
+
   // 添加新頭部
   snake.unshift(head)
-  
+
   // 檢查是否吃到食物
   if (head.x === food.x && head.y === food.y) {
     score.value += 10
@@ -258,18 +273,18 @@ const moveSnake = () => {
 
 const checkCollision = () => {
   const head = snake[0]
-  
+
   // 檢查牆壁碰撞
   if (
-    head.x < 0 || 
-    head.y < 0 || 
-    head.x >= gameCanvas.value.width || 
+    head.x < 0 ||
+    head.y < 0 ||
+    head.x >= gameCanvas.value.width ||
     head.y >= gameCanvas.value.height
   ) {
     gameOver()
     return
   }
-  
+
   // 檢查自身碰撞
   for (let i = 1; i < snake.length; i++) {
     if (head.x === snake[i].x && head.y === snake[i].y) {
@@ -281,42 +296,46 @@ const checkCollision = () => {
 
 const drawGame = () => {
   if (!ctx) return
-  
+
   // 清除畫布
   ctx.fillStyle = '#f8f9fa'
   ctx.fillRect(0, 0, gameCanvas.value.width, gameCanvas.value.height)
-  
+
   // 繪製網格
   ctx.strokeStyle = '#e0e0e0'
   ctx.lineWidth = 0.5
-  
+
   for (let i = 0; i < gameCanvas.value.width; i += cellSize) {
     ctx.beginPath()
     ctx.moveTo(i, 0)
     ctx.lineTo(i, gameCanvas.value.height)
     ctx.stroke()
   }
-  
+
   for (let i = 0; i < gameCanvas.value.height; i += cellSize) {
     ctx.beginPath()
     ctx.moveTo(0, i)
     ctx.lineTo(gameCanvas.value.width, i)
     ctx.stroke()
   }
-  
+
   // 繪製食物 - 使用漸變顏色
   const foodGradient = ctx.createRadialGradient(
-    food.x + cellSize/2, food.y + cellSize/2, 0,
-    food.x + cellSize/2, food.y + cellSize/2, cellSize
-  );
-  foodGradient.addColorStop(0, '#ff5e7a');
-  foodGradient.addColorStop(1, '#ff1744');
-  
-  ctx.fillStyle = foodGradient;
-  ctx.beginPath();
-  ctx.arc(food.x + cellSize/2, food.y + cellSize/2, cellSize/2, 0, Math.PI * 2);
-  ctx.fill();
-  
+    food.x + cellSize / 2,
+    food.y + cellSize / 2,
+    0,
+    food.x + cellSize / 2,
+    food.y + cellSize / 2,
+    cellSize,
+  )
+  foodGradient.addColorStop(0, '#ff5e7a')
+  foodGradient.addColorStop(1, '#ff1744')
+
+  ctx.fillStyle = foodGradient
+  ctx.beginPath()
+  ctx.arc(food.x + cellSize / 2, food.y + cellSize / 2, cellSize / 2, 0, Math.PI * 2)
+  ctx.fill()
+
   // 繪製蛇 - 使用漸變色和圓角
   snake.forEach((segment, index) => {
     // 設定漸變色
@@ -325,54 +344,47 @@ const drawGame = () => {
       ctx.fillStyle = '#1de9b6'
     } else {
       // 蛇身 - 根據位置變化顏色
-      const hue = 160 - (index * 2) % 60
+      const hue = 160 - ((index * 2) % 60)
       ctx.fillStyle = `hsl(${hue}, 90%, 60%)`
     }
-    
+
     // 繪製圓角矩形
-    roundRect(
-      ctx, 
-      segment.x, 
-      segment.y, 
-      cellSize, 
-      cellSize, 
-      index === 0 ? 4 : 2
-    );
-    
+    roundRect(ctx, segment.x, segment.y, cellSize, cellSize, index === 0 ? 4 : 2)
+
     // 添加高光效果
     if (index === 0) {
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-      ctx.beginPath();
-      ctx.arc(segment.x + cellSize/4, segment.y + cellSize/4, cellSize/6, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'
+      ctx.beginPath()
+      ctx.arc(segment.x + cellSize / 4, segment.y + cellSize / 4, cellSize / 6, 0, Math.PI * 2)
+      ctx.fill()
     }
   })
 }
 
 // 繪製圓角矩形的輔助函數
 function roundRect(ctx, x, y, width, height, radius) {
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.arcTo(x + width, y, x + width, y + radius, radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
-  ctx.lineTo(x + radius, y + height);
-  ctx.arcTo(x, y + height, x, y + height - radius, radius);
-  ctx.lineTo(x, y + radius);
-  ctx.arcTo(x, y, x + radius, y, radius);
-  ctx.closePath();
-  ctx.fill();
+  ctx.beginPath()
+  ctx.moveTo(x + radius, y)
+  ctx.lineTo(x + width - radius, y)
+  ctx.arcTo(x + width, y, x + width, y + radius, radius)
+  ctx.lineTo(x + width, y + height - radius)
+  ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius)
+  ctx.lineTo(x + radius, y + height)
+  ctx.arcTo(x, y + height, x, y + height - radius, radius)
+  ctx.lineTo(x, y + radius)
+  ctx.arcTo(x, y, x + radius, y, radius)
+  ctx.closePath()
+  ctx.fill()
 }
 
 const handleKeyDown = (e) => {
   if (!gameStarted.value || isPaused.value) return
-  
+
   // 防止方向鍵滾動頁面
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
     e.preventDefault()
   }
-  
+
   switch (e.key) {
     case 'ArrowUp':
       if (direction !== 'down') direction = 'up'
@@ -423,9 +435,9 @@ const resetGame = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 10%),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 10%);
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 10%),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 10%);
   opacity: 0.8;
   z-index: 0;
 }
@@ -438,9 +450,13 @@ const resetGame = () => {
   z-index: 1;
 }
 
-.main-card, .game-card, .quote-card {
+.main-card,
+.game-card,
+.quote-card {
   border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.2),
+    0 5px 15px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.95);
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -449,9 +465,13 @@ const resetGame = () => {
   position: relative;
 }
 
-.main-card:hover, .game-card:hover, .quote-card:hover {
+.main-card:hover,
+.game-card:hover,
+.quote-card:hover {
   transform: translateY(-8px) scale(1.01);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), 0 10px 20px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.25),
+    0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* 文字漸層效果 */
@@ -517,7 +537,9 @@ const resetGame = () => {
   border: 3px solid #2c3e50;
   border-radius: 12px;
   background-color: #f8f9fa;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), inset 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.1),
+    inset 0 2px 10px rgba(0, 0, 0, 0.05);
   z-index: 1;
 }
 
@@ -628,7 +650,7 @@ const resetGame = () => {
 
 .floating-dots::before,
 .floating-dots::after {
-  content: "";
+  content: '';
   position: absolute;
   width: 8px;
   height: 8px;
@@ -652,22 +674,43 @@ const resetGame = () => {
 
 /* 動畫 */
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes pulseFade {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 0.3; }
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 @keyframes float {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(10px, 10px); }
-  50% { transform: translate(5px, 15px); }
-  75% { transform: translate(-5px, 5px); }
-  100% { transform: translate(0, 0); }
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(10px, 10px);
+  }
+  50% {
+    transform: translate(5px, 15px);
+  }
+  75% {
+    transform: translate(-5px, 5px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
 }
 
 .bounce {
@@ -675,8 +718,13 @@ const resetGame = () => {
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .rotate-quote-icon {
@@ -685,8 +733,12 @@ const resetGame = () => {
 }
 
 @keyframes rotateIcon {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .flip-icon {
@@ -695,7 +747,12 @@ const resetGame = () => {
 }
 
 @keyframes flipIcon {
-  0%, 100% { transform: rotateY(0deg) rotate(0deg); }
-  50% { transform: rotateY(180deg) rotate(0deg); }
+  0%,
+  100% {
+    transform: rotateY(0deg) rotate(0deg);
+  }
+  50% {
+    transform: rotateY(180deg) rotate(0deg);
+  }
 }
-</style> 
+</style>

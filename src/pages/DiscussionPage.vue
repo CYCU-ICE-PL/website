@@ -13,7 +13,11 @@
 
     <div class="row q-col-gutter-lg q-mb-xl">
       <div class="col-12">
-        <a href="https://github.com/CYCU-ICE-PL/website/discussions" target="_blank" class="discussion-link">
+        <a
+          href="https://github.com/CYCU-ICE-PL/website/discussions"
+          target="_blank"
+          class="discussion-link"
+        >
           <q-card class="discussion-card">
             <q-card-section class="card-content">
               <div class="card-icon">
@@ -45,12 +49,12 @@
   </q-page>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, onMounted } from 'vue'
 
 export default defineComponent({
   name: 'DiscussionPage',
-  setup () {
+  setup() {
     const loadGiscus = () => {
       const script = document.createElement('script')
       script.src = 'https://giscus.app/client.js'
@@ -77,7 +81,7 @@ export default defineComponent({
     onMounted(() => {
       loadGiscus()
     })
-  }
+  },
 })
 </script>
 
@@ -221,7 +225,7 @@ export default defineComponent({
     padding: 1.25rem;
     gap: 1rem;
   }
-  
+
   .card-icon {
     padding: 1rem;
   }
@@ -240,4 +244,4 @@ export default defineComponent({
     padding: 2rem;
   }
 }
-</style> 
+</style>

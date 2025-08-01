@@ -3,14 +3,10 @@
     <q-header elevated class="header" :style="{ background: moods[currentMood].headerGradient }">
       <q-toolbar>
         <q-btn flat dense round icon="menu" @click="drawer = !drawer" class="menu-btn">
-          <q-tooltip anchor="bottom right" self="top middle">
-            選單
-          </q-tooltip>
+          <q-tooltip anchor="bottom right" self="top middle"> 選單 </q-tooltip>
         </q-btn>
         <q-btn flat round icon="home" @click="goHome" class="home-btn">
-          <q-tooltip anchor="bottom right" self="top middle">
-            回首頁
-          </q-tooltip>
+          <q-tooltip anchor="bottom right" self="top middle"> 回首頁 </q-tooltip>
         </q-btn>
         <q-toolbar-title class="title">
           <transition name="fade" mode="out-in">
@@ -86,7 +82,7 @@
   </q-layout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -105,7 +101,7 @@ const moods = {
     headerGradient: 'linear-gradient(135deg, #8b9dc3 0%, #6b7b9c 100%)',
     backgroundGradient: 'linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%)',
     primaryColor: '#8b9dc3',
-    secondaryColor: '#6b7b9c'
+    secondaryColor: '#6b7b9c',
   },
   happy: {
     name: '開心',
@@ -113,7 +109,7 @@ const moods = {
     headerGradient: 'linear-gradient(135deg, #FFB6C1 0%, #FFC0CB 100%)',
     backgroundGradient: 'linear-gradient(135deg, #FFF0F5 0%, #FFE4E1 100%)',
     primaryColor: '#FFB6C1',
-    secondaryColor: '#FFC0CB'
+    secondaryColor: '#FFC0CB',
   },
   calm: {
     name: '平靜',
@@ -121,7 +117,7 @@ const moods = {
     headerGradient: 'linear-gradient(135deg, #98FB98 0%, #90EE90 100%)',
     backgroundGradient: 'linear-gradient(135deg, #F0FFF0 0%, #E8F5E9 100%)',
     primaryColor: '#98FB98',
-    secondaryColor: '#90EE90'
+    secondaryColor: '#90EE90',
   },
   energetic: {
     name: '活力',
@@ -129,8 +125,8 @@ const moods = {
     headerGradient: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
     backgroundGradient: 'linear-gradient(135deg, #FFF8DC 0%, #FFE4B5 100%)',
     primaryColor: '#FFD700',
-    secondaryColor: '#FFA500'
-  }
+    secondaryColor: '#FFA500',
+  },
 }
 
 const toggleMood = () => {
@@ -145,9 +141,9 @@ const toggleMood = () => {
 
   setTimeout(() => {
     isPageTransitioning.value = false
-    gtag('event', 'change_mood', {
+    window.gtag('event', 'change_mood', {
       event_category: 'Mood',
-      event_label: moods[currentMood.value].name
+      event_label: moods[currentMood.value].name,
     })
   }, 300)
 }
@@ -162,19 +158,19 @@ const goHome = () => {
 
 // 在組件掛載時發送 gtag 事件
 onMounted(() => {
-  currentPageTitle.value = router.currentRoute.value.name
-  gtag('event', 'page_view', {
+  currentPageTitle.value = String(router.currentRoute.value.name ?? '')
+  window.gtag('event', 'page_view', {
     page_path: router.currentRoute.value.fullPath,
-    page_title: router.currentRoute.value.name,
+    page_title: String(router.currentRoute.value.name ?? ''),
   })
 })
 
 // 使用 router.beforeEach 來監聽路由變更
 router.beforeEach((to, _, next) => {
-  currentPageTitle.value = to.name
-  gtag('event', 'page_view', {
+  currentPageTitle.value = String(to.name ?? '')
+  window.gtag('event', 'page_view', {
     page_path: to.fullPath,
-    page_title: to.name,
+    page_title: String(to.name ?? ''),
   })
   next()
 })
@@ -196,14 +192,16 @@ router.beforeEach((to, _, next) => {
   letter-spacing: 0.5px;
 }
 
-.menu-btn, .home-btn {
+.menu-btn,
+.home-btn {
   color: white;
   transition: all 0.3s ease;
   border-radius: 50%;
   padding: 0.5rem;
 }
 
-.menu-btn:hover, .home-btn:hover {
+.menu-btn:hover,
+.home-btn:hover {
   transform: scale(1.1);
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -268,7 +266,9 @@ router.beforeEach((to, _, next) => {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .fade-enter-from,
@@ -321,7 +321,8 @@ router.beforeEach((to, _, next) => {
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

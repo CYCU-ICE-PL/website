@@ -1,10 +1,16 @@
 <template>
   <div>
-    <slot :isConnected="isConnected" :sendMessage="sendMessage" :connect="connect" :disconnect="disconnect" :connecting="connecting"></slot>
+    <slot
+      :isConnected="isConnected"
+      :sendMessage="sendMessage"
+      :connect="connect"
+      :disconnect="disconnect"
+      :connecting="connecting"
+    ></slot>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onUnmounted, nextTick } from 'vue'
 
 const emit = defineEmits(['message', 'connected', 'disconnected'])
@@ -39,7 +45,7 @@ const connect = async (interpreterType) => {
     isConnected.value = true
     connecting.value = false
     emit('connected')
-    
+
     // 發送 interpreter type
     if (interpreterType) {
       sendMessage(JSON.stringify({ interpreterType: interpreterType, payload: '1\n' })) // 用於讓使用者不必手動輸入testnum

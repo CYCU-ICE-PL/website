@@ -1,10 +1,10 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import pluginVue from 'eslint-plugin-vue'
-import pluginQuasar from '@quasar/app-vite/eslint'
-import prettierSkipFormatting from '@vue/eslint-config-prettier/skip-formatting'
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+import pluginVue from 'eslint-plugin-vue';
+import pluginQuasar from '@quasar/app-vite/eslint';
+import prettierSkipFormatting from '@vue/eslint-config-prettier/skip-formatting';
 
-export default [
+export default tseslint.config(
   {
     /**
      * Ignore the following files.
@@ -18,27 +18,30 @@ export default [
   },
 
   ...pluginQuasar.configs.recommended(),
-  js.configs.recommended,
 
-  /**
-   * https://eslint.vuejs.org
-   *
-   * pluginVue.configs.base
-   *   -> Settings and rules to enable correct ESLint parsing.
-   * pluginVue.configs[ 'flat/essential']
-   *   -> base, plus rules to prevent errors or unintended behavior.
-   * pluginVue.configs["flat/strongly-recommended"]
-   *   -> Above, plus rules to considerably improve code readability and/or dev experience.
-   * pluginVue.configs["flat/recommended"]
-   *   -> Above, plus rules to enforce subjective community defaults to ensure consistency.
-   */
-  ...pluginVue.configs[ 'flat/essential' ],
+  // TypeScript and Vue base configurations
+  ...tseslint.configs.recommended,
+  ...pluginVue.configs['flat/essential'],
 
   {
+    // This block configures the parser for .vue files
+    files: ['**/*.vue'],
+    languageOptions: {
+      parserOptions: {
+        // Use the TypeScript parser for <script> blocks in .vue files
+        parser: tseslint.parser,
+        project: true,
+        tsconfigRootDir: import.meta.dirname,
+        extraFileExtensions: ['.vue'],
+      },
+    },
+  },
+
+  {
+    // General language options for all files
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-
       globals: {
         ...globals.browser,
         ...globals.node, // SSR, Electron, config files
@@ -48,27 +51,26 @@ export default [
         Capacitor: 'readonly',
         chrome: 'readonly', // BEX related
         browser: 'readonly', // BEX related
-        gtag: 'readonly' // Google Analytics
-      }
+        gtag: 'readonly', // Google Analytics
+      },
     },
 
-    // add your custom rules here
+    // Add your custom rules here
     rules: {
       'prefer-promise-reject-errors': 'off',
-
       // allow debugger during development only
-      'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
-    }
+      'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    },
   },
 
   {
-    files: [ 'src-pwa/custom-service-worker.js' ],
+    files: ['src-pwa/custom-service-worker.js'],
     languageOptions: {
       globals: {
-        ...globals.serviceworker
-      }
-    }
+        ...globals.serviceworker,
+      },
+    },
   },
 
   prettierSkipFormatting
-]
+);

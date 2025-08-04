@@ -7,26 +7,29 @@
   </q-card>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue'
 
 const props = defineProps({
   initialText: {
     type: String,
-    required: true
+    required: true,
   },
   title: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const text = ref(props.initialText)
 const textInput = ref(null)
 
-watch(() => props.initialText, (newText) => {
-  text.value = newText
-})
+watch(
+  () => props.initialText,
+  (newText) => {
+    text.value = newText
+  },
+)
 </script>
 
 <style>

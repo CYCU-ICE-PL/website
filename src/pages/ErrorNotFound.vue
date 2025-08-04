@@ -4,32 +4,28 @@
       <q-card-section class="text-center">
         <div class="text-weight-bold error-code">404</div>
         <div class="text-h4 q-mb-md">你迷路了嗎？</div>
-        <q-btn
-          color="primary"
-          unelevated
-          to="/"
-          label="回首頁"
-          no-caps
-          class="return-btn"
-        />
+        <q-btn color="primary" unelevated to="/" label="回首頁" no-caps class="return-btn" />
         <div class="quote q-mt-md" v-if="quote">
           {{ quote }}
         </div>
       </q-card-section>
     </q-card>
-    
+
     <q-card class="meme-card q-mt-md">
       <q-card-section class="text-center">
         <div class="text-h6 q-mb-sm">隨機迷因</div>
         <q-separator class="q-mb-md" />
-        
+
         <div class="meme-container">
           <!-- 加載指示器 -->
-          <div v-if="isLoading" class="flex column items-center justify-center full-width full-height">
+          <div
+            v-if="isLoading"
+            class="flex column items-center justify-center full-width full-height"
+          >
             <q-spinner-dots size="40px" color="primary" />
             <div class="text-primary q-mt-sm" style="font-size: 1.1em">獲取迷因中...</div>
           </div>
-          
+
           <!-- 錯誤狀態顯示 -->
           <div v-else-if="!memeUrl" class="error-placeholder">
             <q-icon name="sentiment_dissatisfied" size="4rem" color="grey-7" />
@@ -43,7 +39,7 @@
               class="q-mt-md"
             />
           </div>
-          
+
           <!-- 成功加載的圖片顯示 -->
           <div v-else class="meme-loaded-container">
             <!-- 調試信息 -->
@@ -73,7 +69,7 @@
                 </div>
               </template>
             </q-img>
-            
+
             <q-btn
               flat
               color="primary"
@@ -94,7 +90,7 @@
   </q-page>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { getQuote } from 'src/data/quotes'
 import { useQuasar } from 'quasar'
@@ -117,32 +113,31 @@ const fetchRandomMeme = async () => {
   try {
     isLoading.value = true
     const response = await fetch('https://meme-api.com/gimme')
-    
+
     if (!response.ok) {
       throw new Error(`獲取迷因失敗：${response.status} ${response.statusText}`)
     }
-    
+
     const data = await response.json()
-    
+
     if (!data.url) {
       throw new Error('迷因API返回的數據不包含圖片URL')
     }
-    
+
     // 嘗試載入主圖片URL或備用預覽圖
     tryLoadImage(data)
-    
   } catch (error) {
     console.error('Error fetching meme:', error)
-    
+
     if (retryCount.value < maxRetries) {
       retryCount.value++
       $q.notify({
         message: `正在嘗試重新獲取迷因圖片 (${retryCount.value}/${maxRetries})...`,
         color: 'warning',
         icon: 'refresh',
-        timeout: 2000
+        timeout: 2000,
       })
-      
+
       // 延遲1秒後重試
       setTimeout(() => {
         fetchRandomMeme()
@@ -153,7 +148,7 @@ const fetchRandomMeme = async () => {
         message: '無法載入迷因圖片，請稍後重試',
         color: 'negative',
         icon: 'error',
-        timeout: 3000
+        timeout: 3000,
       })
     }
   }
@@ -163,10 +158,10 @@ const fetchRandomMeme = async () => {
 const tryLoadImage = (data) => {
   const mainUrl = data.url
   const previewUrls = data.preview || []
-  
+
   // 先嘗試主圖片URL
   const imgPreload = new Image()
-  
+
   imgPreload.onload = () => {
     memeUrl.value = mainUrl
     // 確保圖片加載後設置isLoading為false
@@ -175,7 +170,7 @@ const tryLoadImage = (data) => {
     }, 100)
     retryCount.value = 0 // 重置重試計數
   }
-  
+
   imgPreload.onerror = () => {
     console.error('主圖片載入失敗，嘗試預覽圖')
     // 如果主圖片載入失敗，嘗試使用預覽圖（從最大尺寸開始）
@@ -194,7 +189,7 @@ const tryLoadImage = (data) => {
       }
     }
   }
-  
+
   // 開始載入主圖片
   imgPreload.src = mainUrl
 }
@@ -213,10 +208,10 @@ const tryPreviewImages = (previewUrls) => {
     }
     return
   }
-  
+
   const previewUrl = previewUrls.shift()
   const imgPreview = new Image()
-  
+
   imgPreview.onload = () => {
     memeUrl.value = previewUrl
     // 確保圖片加載後設置isLoading為false
@@ -225,12 +220,12 @@ const tryPreviewImages = (previewUrls) => {
     }, 100)
     retryCount.value = 0
   }
-  
+
   imgPreview.onerror = () => {
     // 嘗試下一個預覽圖
     tryPreviewImages(previewUrls)
   }
-  
+
   imgPreview.src = previewUrl
 }
 
@@ -240,7 +235,7 @@ const imageLoaded = () => {
 
 const handleImageError = () => {
   isLoading.value = false
-  
+
   if (retryCount.value < maxRetries) {
     retryCount.value++
     // 自動嘗試重新獲取
@@ -269,7 +264,8 @@ onMounted(() => {
   background: transparent;
 }
 
-.error-card, .meme-card {
+.error-card,
+.meme-card {
   width: 100%;
   max-width: 600px;
   background: rgba(255, 255, 255, 0.95);
@@ -280,7 +276,8 @@ onMounted(() => {
   transition: all 0.3s ease;
 }
 
-.error-card:hover, .meme-card:hover {
+.error-card:hover,
+.meme-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
@@ -366,15 +363,16 @@ onMounted(() => {
   .error-code {
     font-size: 6rem;
   }
-  
-  .error-card, .meme-card {
+
+  .error-card,
+  .meme-card {
     margin: 0 1rem;
   }
-  
+
   .meme-container {
     height: 250px;
   }
-  
+
   .meme-image {
     max-height: 250px;
   }

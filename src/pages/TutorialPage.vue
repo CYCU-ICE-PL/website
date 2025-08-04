@@ -3,20 +3,33 @@
     <div class="text-center">
       <h1 class="title">使用教學</h1>
       <p class="description">以下是如何使用 OurScheme 的步驟：</p>
-      
+
       <q-stepper v-model="step" flat animated class="tutorial-stepper">
-        <q-step v-for="(stepDetail, index) in steps" :key="index" :name="index + 1" :title="stepDetail.title">
+        <q-step
+          v-for="(stepDetail, index) in steps"
+          :key="index"
+          :name="index + 1"
+          :title="stepDetail.title"
+        >
           <div class="step-content">
             <div class="step-header">
               <q-icon :name="stepDetail.icon" class="step-icon" />
               <h2 class="step-title">{{ stepDetail.title }}</h2>
             </div>
-            
+
             <p class="step-description">{{ stepDetail.description }}</p>
-            
+
             <div v-if="stepDetail.images" class="step-images">
-              <div v-for="(image, imgIndex) in stepDetail.images" :key="imgIndex" class="image-container">
-                <img :src="image" :alt="'Step ' + (index + 1) + ' Image ' + (imgIndex + 1)" class="step-image" />
+              <div
+                v-for="(image, imgIndex) in stepDetail.images"
+                :key="imgIndex"
+                class="image-container"
+              >
+                <img
+                  :src="image"
+                  :alt="'Step ' + (index + 1) + ' Image ' + (imgIndex + 1)"
+                  class="step-image"
+                />
                 <div class="image-overlay" @click="showImagePreview(image)">
                   <q-icon name="zoom_in" size="2rem" />
                 </div>
@@ -43,23 +56,20 @@
             </div>
 
             <q-space />
-            
+
             <div class="button-group">
-              <q-btn v-if="index > 0" 
-                     icon="arrow_back" 
-                     class="prev-button" 
-                     @click="prevStep">
+              <q-btn v-if="index > 0" icon="arrow_back" class="prev-button" @click="prevStep">
                 <q-tooltip>上一步</q-tooltip>
               </q-btn>
-              <q-btn v-if="index < steps.length - 1" 
-                     icon="arrow_forward" 
-                     class="next-button" 
-                     @click="nextStep">
+              <q-btn
+                v-if="index < steps.length - 1"
+                icon="arrow_forward"
+                class="next-button"
+                @click="nextStep"
+              >
                 <q-tooltip>下一步</q-tooltip>
               </q-btn>
-              <q-btn v-else 
-                     class="finish-button" 
-                     @click="finishTutorial">
+              <q-btn v-else class="finish-button" @click="finishTutorial">
                 <q-icon name="check" class="q-mr-sm" />
                 完成教學
               </q-btn>
@@ -88,7 +98,7 @@
   </q-page>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Notify } from 'quasar'
@@ -104,50 +114,36 @@ const steps = ref([
     description: '在 OurScheme 中，首先選擇你要測試的Project。',
     icon: 'folder_open',
     images: ['steps/step1.png'],
-    tips: [
-      '建議先從 project1 開始練習',
-      '每個 project 都有不同的測試重點'
-    ]
+    tips: ['建議先從 project1 開始練習', '每個 project 都有不同的測試重點'],
   },
   {
     title: '步驟 2: 點擊 Project',
     description: '點擊連線Project按鈕，連線到選擇的 Project。',
     icon: 'link',
     images: ['steps/step2.png'],
-    tips: [
-      '確保網路連線穩定',
-      '如果連線失敗，可以嘗試重新整理頁面'
-    ]
+    tips: ['確保網路連線穩定', '如果連線失敗，可以嘗試重新整理頁面'],
   },
   {
     title: '步驟 3: 輸入程式碼',
     description: '在輸入框中輸入你要執行的程式碼。',
     icon: 'edit_note',
     images: ['steps/step3.png'],
-    tips: [
-      '可以輸入單行也可以多行程式碼'
-    ]
+    tips: ['可以輸入單行也可以多行程式碼'],
   },
   {
     title: '步驟 4: 送出程式碼',
     description: '點擊送出按鈕，讓後端(直譯器)讀取你輸入的程式碼。',
     icon: 'send',
     images: ['steps/step4-1.png'],
-    tips: [
-      '送出前請確認程式碼是否完整',
-      '系統會自動append \'\\n\'到你的程式碼中'
-    ]
+    tips: ['送出前請確認程式碼是否完整', "系統會自動append '\\n'到你的程式碼中"],
   },
   {
     title: '步驟 5: 查看結果',
     description: '在輸入框與輸出框中檢查歷史輸入和執行結果。',
     icon: 'visibility',
     images: ['steps/step5-1.png'],
-    tips: [
-      '可以查看歷史記錄了解執行過程',
-      '如果結果不符合預期，可以檢查輸入的程式碼'
-    ]
-  }
+    tips: ['可以查看歷史記錄了解執行過程', '如果結果不符合預期，可以檢查輸入的程式碼'],
+  },
 ])
 
 const nextStep = () => {
@@ -168,7 +164,7 @@ const finishTutorial = () => {
     color: 'positive',
     position: 'top',
     icon: 'check_circle',
-    timeout: 2000
+    timeout: 2000,
   })
   navigateToHome()
 }
@@ -315,7 +311,7 @@ const showImagePreview = (image) => {
 }
 
 .tips-list li:before {
-  content: "💡";
+  content: '💡';
   margin-right: 0.5rem;
 }
 
@@ -326,7 +322,9 @@ const showImagePreview = (image) => {
   margin-top: 2rem;
 }
 
-.next-button, .prev-button, .finish-button {
+.next-button,
+.prev-button,
+.finish-button {
   background: linear-gradient(135deg, #8b9dc3 0%, #6b7b9c 100%);
   color: white;
   border: none;
@@ -336,7 +334,9 @@ const showImagePreview = (image) => {
   font-weight: 500;
 }
 
-.next-button:hover, .prev-button:hover, .finish-button:hover {
+.next-button:hover,
+.prev-button:hover,
+.finish-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }

@@ -26,7 +26,11 @@
                   </template>
                   <template v-else>
                     <q-tooltip anchor="bottom right" self="top middle">
-                      {{ wsConnected && currentProject === option ? `已連線到 ${option}` : `切換到 ${option}` }}
+                      {{
+                        wsConnected && currentProject === option
+                          ? `已連線到 ${option}`
+                          : `切換到 ${option}`
+                      }}
                     </q-tooltip>
                   </template>
                 </q-btn>
@@ -50,11 +54,7 @@
                 >
                   <q-tooltip>交互紀錄</q-tooltip>
                 </q-btn>
-                <q-btn
-                  icon="download"
-                  @click="exportFiles"
-                  class="toggle-btn"
-                >
+                <q-btn icon="download" @click="exportFiles" class="toggle-btn">
                   <q-tooltip>匯出檔案</q-tooltip>
                 </q-btn>
               </q-btn-group>
@@ -85,9 +85,7 @@
               <q-card-section>
                 <div class="text-h6 q-mb-md">
                   交互紀錄
-                  <q-badge color="pink" class="q-ml-sm">
-                    Preview
-                  </q-badge>
+                  <q-badge color="pink" class="q-ml-sm"> Preview </q-badge>
                 </div>
                 <q-input filled v-model="interactionLog" type="textarea" autogrow readonly />
               </q-card-section>
@@ -134,171 +132,172 @@
   </WebSocketComponent>
 </template>
 
-<script setup>
-import { ref, nextTick } from 'vue';
-import { useQuasar } from 'quasar';
-import TextArea from 'components/TextArea.vue';
-import WebSocketComponent from 'components/WebsocketComponent.vue';
+<script setup lang="ts">
+import { ref, nextTick } from 'vue'
+import { useQuasar } from 'quasar'
+import TextArea from 'components/TextArea.vue'
+import WebSocketComponent from 'components/WebsocketComponent.vue'
 
-const $q = useQuasar();
+const $q = useQuasar()
 
-const code = ref('');
-const output = ref('');
-const input = ref('');
-const inputTitle = ref('Input');
-const outputTitle = ref('Output');
-const isInterpreterTypeLocked = ref(false);
-const executing = ref(false);
-const currentProject = ref('');
-const interactionLog = ref(''); // 交互紀錄狀態
-const interpreterOptions = ['project1', 'project2', 'project3', 'project4'];
-const sendlock = ref(false);
-const activeTab = ref('io'); // 新增 tab 狀態
-const pendingLines = ref([]); // 待處理的程式碼行
-const isReady = ref(true); // 是否準備好接收下一行
-const currentSendMessage = ref(null); // 儲存當前的 sendMessage 函數
-const wsConnected = ref(false); // 新增 WebSocket 連線狀態
+const code = ref('')
+const output = ref('')
+const input = ref('')
+const inputTitle = ref('Input')
+const outputTitle = ref('Output')
+const isInterpreterTypeLocked = ref(false)
+const executing = ref(false)
+const currentProject = ref('')
+const interactionLog = ref('') // 交互紀錄狀態
+const interpreterOptions = ['project1', 'project2', 'project3', 'project4']
+const sendlock = ref(false)
+const activeTab = ref('io') // 新增 tab 狀態
+const pendingLines = ref([]) // 待處理的程式碼行
+const isReady = ref(true) // 是否準備好接收下一行
+const currentSendMessage = ref(null) // 儲存當前的 sendMessage 函數
+const wsConnected = ref(false) // 新增 WebSocket 連線狀態
 
 const handleProjectChange = async (project, connect, disconnect, isConnected) => {
-  if (currentProject.value === project) return;
-  
+  if (currentProject.value === project) return
+
   if (isConnected) {
-    await disconnect();
+    await disconnect()
     // 等待斷開連接完成
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100))
   }
-  
-  currentProject.value = project;
+
+  currentProject.value = project
   // 根據選擇的專案決定要連接到哪個專案
   if (project === 'project234') {
     // 隨機選擇一個專案
-    const projects = ['project2', 'project3', 'project4'];
-    const randomProject = projects[Math.floor(Math.random() * projects.length)];
-    connect(`OurScheme${randomProject}`);
+    const projects = ['project2', 'project3', 'project4']
+    const randomProject = projects[Math.floor(Math.random() * projects.length)]
+    connect(`OurScheme${randomProject}`)
   } else {
-    connect(`OurScheme${project}`);
+    connect(`OurScheme${project}`)
   }
-};
+}
 
 const sendCode = async (sendMessage) => {
-  if (!wsConnected.value || executing.value) return;
-  
-  executing.value = true;
-  isReady.value = true; // 確保初始狀態是 ready
-  currentSendMessage.value = sendMessage;
-  const lines = code.value.split('\n');
-  pendingLines.value = lines;
-  code.value = ''; // 清空程式碼編輯器
-  
+  if (!wsConnected.value || executing.value) return
+
+  executing.value = true
+  isReady.value = true // 確保初始狀態是 ready
+  currentSendMessage.value = sendMessage
+  const lines = code.value.split('\n')
+  pendingLines.value = lines
+  code.value = '' // 清空程式碼編輯器
+
   if (isReady.value) {
-    await processNextLine();
+    await processNextLine()
   }
-};
+}
 
 const processNextLine = async () => {
   if (pendingLines.value.length === 0) {
-    executing.value = false;
-    isReady.value = true;
-    return;
+    executing.value = false
+    isReady.value = true
+    return
   }
 
-  isReady.value = false;
-  const line = pendingLines.value[0];
-  
-  input.value += line + '\n';
-  
+  isReady.value = false
+  const line = pendingLines.value[0]
+
+  input.value += line + '\n'
+
   const message = {
-    interpreterType: currentProject.value === 'project234' 
-      ? `OurScheme${['project2', 'project3', 'project4'][Math.floor(Math.random() * 3)]}`
-      : `OurScheme${currentProject.value}`,
+    interpreterType:
+      currentProject.value === 'project234'
+        ? `OurScheme${['project2', 'project3', 'project4'][Math.floor(Math.random() * 3)]}`
+        : `OurScheme${currentProject.value}`,
     payload: line + '\n',
-  };
-  
-  if (typeof currentSendMessage.value === 'function') {
-    currentSendMessage.value(JSON.stringify(message));
-  } else {
-    console.error('sendMessage is not available');
-    executing.value = false;
-    isReady.value = true;
-    return;
   }
-  
-  interactionLog.value += `${line}\n`;
-  pendingLines.value.shift();
-};
+
+  if (typeof currentSendMessage.value === 'function') {
+    currentSendMessage.value(JSON.stringify(message))
+  } else {
+    console.error('sendMessage is not available')
+    executing.value = false
+    isReady.value = true
+    return
+  }
+
+  interactionLog.value += `${line}\n`
+  pendingLines.value.shift()
+}
 
 const updateInput = (newInput) => {
-  input.value = newInput;
-};
+  input.value = newInput
+}
 
 const updateOutput = (message) => {
   try {
-    const parsedMessage = JSON.parse(message);
+    const parsedMessage = JSON.parse(message)
     if (parsedMessage.type === 'ready') {
-      isReady.value = true;
+      isReady.value = true
       if (pendingLines.value.length > 0) {
-        processNextLine();
+        processNextLine()
       } else {
-        executing.value = false;
-        isReady.value = true;
+        executing.value = false
+        isReady.value = true
       }
-      return;
+      return
     } else if (parsedMessage.type === 'ack') {
       // 如果是空 payload 的 ack，忽略它
       if (!parsedMessage.payload) {
-        return;
+        return
       }
       // 其他 ack 訊息也忽略，讓 ready 訊息來處理狀態
-      return;
+      return
     }
   } catch {
     // 如果不是 JSON 格式，則為一般輸出
-    output.value += message;
-    interactionLog.value += `${message}`;
+    output.value += message
+    interactionLog.value += `${message}`
   }
-};
+}
 
 const lockInterpreterType = () => {
-  isInterpreterTypeLocked.value = true;
-};
+  isInterpreterTypeLocked.value = true
+}
 
 const unlockInterpreterType = () => {
-  isInterpreterTypeLocked.value = false;
-};
+  isInterpreterTypeLocked.value = false
+}
 
 const clearInputOutput = () => {
-  code.value = '';
-  input.value = '';
-  output.value = '';
-  interactionLog.value = '';
-};
+  code.value = ''
+  input.value = ''
+  output.value = ''
+  interactionLog.value = ''
+}
 
 const handleConnected = () => {
-  sendlock.value = false;
-  lockInterpreterType();
-  clearInputOutput();
-  input.value = '1\n'; // 初始化輸入 (TestNumber)
-  interactionLog.value = '1\n'; // 初始化交互紀錄
-  isReady.value = true; // 初始化 ready 狀態
-  pendingLines.value = []; // 清空待處理的行
-  wsConnected.value = true; // 更新連線狀態
+  sendlock.value = false
+  lockInterpreterType()
+  clearInputOutput()
+  input.value = '1\n' // 初始化輸入 (TestNumber)
+  interactionLog.value = '1\n' // 初始化交互紀錄
+  isReady.value = true // 初始化 ready 狀態
+  pendingLines.value = [] // 清空待處理的行
+  wsConnected.value = true // 更新連線狀態
   $q.notify({
     type: 'positive',
     message: '連線成功',
     timeout: 1200,
     position: 'top',
     progress: true,
-  });
-};
+  })
+}
 
 const handleDisconnected = () => {
-  sendlock.value = true;
-  unlockInterpreterType();
-  currentProject.value = '';
-  isReady.value = false; // 重置 ready 狀態
-  pendingLines.value = []; // 清空待處理的行
-  currentSendMessage.value = null; // 重置 sendMessage
-  wsConnected.value = false; // 更新連線狀態
+  sendlock.value = true
+  unlockInterpreterType()
+  currentProject.value = ''
+  isReady.value = false // 重置 ready 狀態
+  pendingLines.value = [] // 清空待處理的行
+  currentSendMessage.value = null // 重置 sendMessage
+  wsConnected.value = false // 更新連線狀態
   $q.notify({
     type: 'warning',
     message: '連線中斷',
@@ -306,74 +305,76 @@ const handleDisconnected = () => {
     position: 'top',
     progress: true,
     icon: 'warning',
-  });
-};
+  })
+}
 
 const handleEnterKey = (event, sendMessage) => {
   if (event.shiftKey) {
     // 如果是 Shift + Enter，插入換行
-    const textarea = event.target;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    code.value = code.value.substring(0, start) + '\n' + code.value.substring(end);
-    
+    const textarea = event.target
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    code.value = code.value.substring(0, start) + '\n' + code.value.substring(end)
+
     // 將游標移到新行的開始位置
     nextTick(() => {
-      textarea.selectionStart = textarea.selectionEnd = start + 1;
-    });
+      textarea.selectionStart = textarea.selectionEnd = start + 1
+    })
   } else {
     // 如果是單純的 Enter，送出程式碼
-    if (!wsConnected.value || executing.value) return;
+    if (!wsConnected.value || executing.value) return
     if (typeof sendMessage === 'function') {
-      sendCode(sendMessage);
+      sendCode(sendMessage)
     } else {
-      console.error('sendMessage is not available');
+      console.error('sendMessage is not available')
     }
   }
-};
+}
 
 const exportFiles = () => {
-  const timestamp = new Date().toLocaleString('zh-TW', {
-    timeZone: 'Asia/Taipei',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  }).replace(/[/\s:]/g, '-');
-  
+  const timestamp = new Date()
+    .toLocaleString('zh-TW', {
+      timeZone: 'Asia/Taipei',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })
+    .replace(/[/\s:]/g, '-')
+
   // 匯出 .in 檔案
-  const inBlob = new Blob([input.value], { type: 'text/plain' });
-  const inUrl = URL.createObjectURL(inBlob);
-  const inLink = document.createElement('a');
-  inLink.href = inUrl;
-  inLink.download = `input_${timestamp}.in`;
-  document.body.appendChild(inLink);
-  inLink.click();
-  document.body.removeChild(inLink);
-  URL.revokeObjectURL(inUrl);
+  const inBlob = new Blob([input.value], { type: 'text/plain' })
+  const inUrl = URL.createObjectURL(inBlob)
+  const inLink = document.createElement('a')
+  inLink.href = inUrl
+  inLink.download = `input_${timestamp}.in`
+  document.body.appendChild(inLink)
+  inLink.click()
+  document.body.removeChild(inLink)
+  URL.revokeObjectURL(inUrl)
 
   // 匯出 .out 檔案
-  const outBlob = new Blob([output.value], { type: 'text/plain' });
-  const outUrl = URL.createObjectURL(outBlob);
-  const outLink = document.createElement('a');
-  outLink.href = outUrl;
-  outLink.download = `output_${timestamp}.out`;
-  document.body.appendChild(outLink);
-  outLink.click();
-  document.body.removeChild(outLink);
-  URL.revokeObjectURL(outUrl);
+  const outBlob = new Blob([output.value], { type: 'text/plain' })
+  const outUrl = URL.createObjectURL(outBlob)
+  const outLink = document.createElement('a')
+  outLink.href = outUrl
+  outLink.download = `output_${timestamp}.out`
+  document.body.appendChild(outLink)
+  outLink.click()
+  document.body.removeChild(outLink)
+  URL.revokeObjectURL(outUrl)
 
   // 匯出交互紀錄
-  const logBlob = new Blob([interactionLog.value], { type: 'text/plain' });
-  const logUrl = URL.createObjectURL(logBlob);
-  const logLink = document.createElement('a');
-  logLink.href = logUrl;
-  logLink.download = `interaction_log_${timestamp}.txt`;
-  document.body.appendChild(logLink);
-  logLink.click();
-  document.body.removeChild(logLink);
-  URL.revokeObjectURL(logUrl);
+  const logBlob = new Blob([interactionLog.value], { type: 'text/plain' })
+  const logUrl = URL.createObjectURL(logBlob)
+  const logLink = document.createElement('a')
+  logLink.href = logUrl
+  logLink.download = `interaction_log_${timestamp}.txt`
+  document.body.appendChild(logLink)
+  logLink.click()
+  document.body.removeChild(logLink)
+  URL.revokeObjectURL(logUrl)
 
   $q.notify({
     type: 'positive',
@@ -381,8 +382,8 @@ const exportFiles = () => {
     timeout: 1200,
     position: 'top',
     progress: true,
-  });
-};
+  })
+}
 </script>
 
 <style scoped>
@@ -614,7 +615,7 @@ const exportFiles = () => {
   align-items: center;
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
@@ -684,7 +685,7 @@ const exportFiles = () => {
   :deep(.text-area-container) {
     min-height: 150px;
   }
-  
+
   :deep(.text-area-title) {
     font-size: 0.9rem;
     margin-bottom: 0.25rem;

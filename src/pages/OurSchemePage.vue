@@ -11,7 +11,7 @@
         <div class="control-section q-mb-md">
           <div class="row items-center q-col-gutter-md">
             <div class="col">
-              <q-btn-group push spread>
+              <q-btn-group v-if="!$q.screen.lt.sm" push spread>
                 <q-btn
                   v-for="option in interpreterOptions"
                   :key="option"
@@ -35,6 +35,29 @@
                   </template>
                 </q-btn>
               </q-btn-group>
+              <!-- 小螢幕顯示 -->
+              <q-btn-dropdown
+                v-else
+                :label="currentProject || '選擇專案'"
+                :color="wsConnected ? 'green' : 'grey'"
+                :disable="connecting"
+                class="full-width"
+              >
+                <q-list>
+                  <q-item
+                    v-for="option in interpreterOptions"
+                    :key="option"
+                    clickable
+                    v-close-popup
+                    @click="() => handleProjectChange(option, connect, disconnect, wsConnected)"
+                    :active="currentProject === option"
+                  >
+                    <q-item-section>
+                      <q-item-label>{{ option }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
             </div>
             <div class="col-auto">
               <q-btn-group flat>

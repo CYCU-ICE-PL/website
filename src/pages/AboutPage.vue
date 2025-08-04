@@ -121,11 +121,9 @@
                 <q-list v-if="!isLoading.commits" separator class="rounded-borders">
                   <q-item v-for="commit in commits" :key="commit.sha" class="commit-item q-pa-sm">
                     <q-item-section>
-                      <q-item-label
-                        class="text-weight-medium text-body2"
-                        style="white-space: pre-wrap"
-                        >{{ commit.commit.message }}</q-item-label
-                      >
+                      <q-item-label class="text-weight-medium text-body2">{{
+                        commit.commit.message
+                      }}</q-item-label>
                       <q-item-label caption class="text-grey">
                         <q-icon name="fas fa-user" size="xs" class="q-mr-xs" />
                         {{ commit.author?.login || 'Unknown' }} -
@@ -412,6 +410,8 @@ const navigateToCodeJudge = () => {
 .commit-item {
   border-radius: 8px;
   transition: all 0.3s ease;
+  white-space: pre-wrap; /* 保留空格和換行 */
+  word-break: break-all; /* 避免過長的單字導致版面破壞 */
 }
 
 .commit-item:hover {

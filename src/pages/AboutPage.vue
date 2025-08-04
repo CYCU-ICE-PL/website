@@ -121,9 +121,11 @@
                 <q-list v-if="!isLoading.commits" separator class="rounded-borders">
                   <q-item v-for="commit in commits" :key="commit.sha" class="commit-item q-pa-sm">
                     <q-item-section>
-                      <q-item-label class="text-weight-medium text-body2">{{
-                        commit.commit.message
-                      }}</q-item-label>
+                      <q-item-label
+                        class="text-weight-medium text-body2"
+                        style="white-space: pre-wrap"
+                        >{{ commit.commit.message }}</q-item-label
+                      >
                       <q-item-label caption class="text-grey">
                         <q-icon name="fas fa-user" size="xs" class="q-mr-xs" />
                         {{ commit.author?.login || 'Unknown' }} -

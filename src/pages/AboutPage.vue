@@ -410,6 +410,8 @@ const navigateToCodeJudge = () => {
 .commit-item {
   border-radius: 8px;
   transition: all 0.3s ease;
+  white-space: pre-wrap; /* 保留空格和換行 */
+  word-break: break-all; /* 避免過長的單字導致版面破壞 */
 }
 
 .commit-item:hover {

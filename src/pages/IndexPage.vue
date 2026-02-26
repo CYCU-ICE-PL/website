@@ -35,6 +35,23 @@
         </div>
       </q-card-section>
     </q-card>
+
+    <!-- <tmp> -->
+    <q-dialog v-model="annoucement">
+      <q-card class="bg-white text-black">
+        <q-toolbar class="bg-orange text-white">
+          <q-toolbar-title>網站公告</q-toolbar-title>
+        </q-toolbar>
+        <q-card-section class="row items-center">
+          <p>目前可視化系統正在進行後端遷移，功能暫時不可用，請稍後再訪問。</p>
+          <p>- ja-errorpro</p>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="關閉" color="secondary" @click="annoucement = false" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <!-- </tmp> -->
   </q-page>
 </template>
 
@@ -44,6 +61,8 @@ import { ref } from 'vue'
 
 const router = useRouter()
 const logoClickCount = ref(0)
+
+const annoucement = ref(true)
 
 const navigateToOurScheme = () => {
   router.push('/OurScheme')

@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <iframe
-      src="https://visualpl-new.lab214b.uk:5001/"
+      src="https://pl-visualize-tmp.ja-errorpro.codes/"
       style="width: 100%; height: 100vh; border: none"
     ></iframe>
   </q-page>

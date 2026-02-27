@@ -110,15 +110,15 @@ const previewImage = ref('')
 
 const steps = ref([
   {
-    title: '步驟 1: 選擇Project',
-    description: '在 OurScheme 中，首先選擇你要測試的Project。',
+    title: '步驟 1: 選擇 Project',
+    description: '在 OurScheme 中，首先選擇你要測試的 Project。',
     icon: 'folder_open',
     images: ['steps/step1.png'],
     tips: ['建議先從 project1 開始練習', '每個 project 都有不同的測試重點'],
   },
   {
     title: '步驟 2: 點擊 Project',
-    description: '點擊連線Project按鈕，連線到選擇的 Project。',
+    description: '點擊連線 Project 按鈕，連線到選擇的 Project。',
     icon: 'link',
     images: ['steps/step2.png'],
     tips: ['確保網路連線穩定', '如果連線失敗，可以嘗試重新整理頁面'],
@@ -135,7 +135,7 @@ const steps = ref([
     description: '點擊送出按鈕，讓後端(直譯器)讀取你輸入的程式碼。',
     icon: 'send',
     images: ['steps/step4-1.png'],
-    tips: ['送出前請確認程式碼是否完整', "系統會自動append '\\n'到你的程式碼中"],
+    tips: ['送出前請確認程式碼是否完整', "系統會自動 append '\\n'到你的程式碼中"],
   },
   {
     title: '步驟 5: 查看結果',

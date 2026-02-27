@@ -6,7 +6,9 @@
           <q-card-section class="text-center">
             <h1 class="text-h3 text-weight-bold q-mb-md">關於我們</h1>
             <p class="text-h6 q-mb-md">如果您喜歡這個網站，請不要忘記按個讚支持我們</p>
-            <p class="text-h6 q-mb-xl">此網站的source code已開源在 GitHub 上，歡迎大家參與貢獻!</p>
+            <p class="text-h6 q-mb-xl">
+              此網站的 source code 已開源在 GitHub 上，歡迎大家參與貢獻!
+            </p>
 
             <div class="row justify-center q-gutter-md q-mb-lg">
               <q-btn
@@ -56,6 +58,21 @@
                   Simple Code Judge
                   <q-tooltip class="bg-primary text-body2">
                     簡易程式碼判題系統 - 輕量級的程式碼評測平台
+                  </q-tooltip>
+                </q-chip>
+              </div>
+              <div class="col-auto">
+                <q-chip
+                  class="tool-chip"
+                  color="primary"
+                  text-color="white"
+                  icon="fas fa-bug"
+                  clickable
+                  @click="navigateToValgrind"
+                >
+                  Valgrind
+                  <q-tooltip class="bg-primary text-body2">
+                    C/C++ 記憶體檢測工具 - 用於檢測程式中的記憶體錯誤和洩漏
                   </q-tooltip>
                 </q-chip>
               </div>
@@ -328,6 +345,10 @@ const navigateToIssue = () => {
 
 const navigateToCodeJudge = () => {
   window.open('https://github.com/0857boy/simple-code-judge', '_blank')
+}
+
+const navigateToValgrind = () => {
+  window.open('https://valgrind.org/', '_blank')
 }
 </script>
 

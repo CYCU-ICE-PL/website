@@ -17,29 +17,56 @@ const emit = defineEmits(['message', 'connected', 'disconnected'])
 
 const isConnected = ref(false)
 const connecting = ref(false)
-let socket
+let socket: WebSocket | null = null
+let connection_generation = 0
 
-const sendMessage = (message) => {
-  if (isConnected.value) {
+const sendMessage = (message: string) => {
+  if (isConnected.value && socket) {
     socket.send(message)
   }
 }
 
-const connect = async (interpreterType) => {
+/**
+ * Clean up the current socket without emitting events.
+ * Nullifies all handlers to prevent stale callbacks from firing.
+ */
+const cleanupSocket = () => {
+  if (socket) {
+    try {
+      socket.onclose = null
+      socket.onerror = null
+      socket.onmessage = null
+      socket.onopen = null
+      socket.close()
+    } catch {
+      // Ignore errors during cleanup
+    }
+    socket = null
+  }
+}
+
+const connect = async (interpreterType: string) => {
+  const generation = ++connection_generation
   console.log('interpreterType:', interpreterType)
+
+  // Clean up existing socket to prevent stale callbacks
+  cleanupSocket()
+
   connecting.value = true
   await nextTick()
-  const wsUrl = `wss://visualpl.lab214b.uk:5001/`
+  const wsUrl = `wss://pl-tmp.ja-errorpro.codes/`
   socket = new WebSocket(wsUrl)
 
   const timeoutId = setTimeout(() => {
+    if (generation !== connection_generation) return
     if (!isConnected.value) {
-      socket.close()
+      cleanupSocket()
       connecting.value = false
     }
   }, 3000) // 3秒超時
 
   socket.onopen = () => {
+    if (generation !== connection_generation) return // Stale callback, ignore
     clearTimeout(timeoutId)
     console.log('WebSocket connection established')
     isConnected.value = true
@@ -53,6 +80,7 @@ const connect = async (interpreterType) => {
   }
 
   socket.onclose = () => {
+    if (generation !== connection_generation) return // Stale callback, ignore
     clearTimeout(timeoutId)
     console.log('WebSocket connection closed')
     isConnected.value = false
@@ -61,26 +89,29 @@ const connect = async (interpreterType) => {
   }
 
   socket.onerror = (error) => {
+    if (generation !== connection_generation) return // Stale callback, ignore
     clearTimeout(timeoutId)
     console.error('WebSocket error:', error)
     connecting.value = false
   }
 
   socket.onmessage = (event) => {
+    if (generation !== connection_generation) return // Stale callback, ignore
     console.log('WebSocket message received:', event.data)
     emit('message', event.data)
   }
 }
 
 const disconnect = () => {
-  if (socket) {
-    socket.close()
-  }
+  connection_generation++ // Invalidate all pending callbacks from old sockets
+  cleanupSocket()
+  isConnected.value = false
+  connecting.value = false
+  emit('disconnected')
 }
 
 onUnmounted(() => {
-  if (socket) {
-    socket.close()
-  }
+  connection_generation++ // Prevent callbacks after unmount
+  cleanupSocket()
 })
 </script>

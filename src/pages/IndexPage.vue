@@ -5,7 +5,8 @@
         <img src="icons/favicon.svg" alt="Logo" class="logo" @click="handleLogoClick" />
         <h1 class="main-title">歡迎來到 PL 可視化</h1>
         <p class="description">
-          中原大學資訊工程學系「程式語言」課程學習輔助工具，用於OurScheme和OurC的可視化和執行追蹤。
+          中原大學資訊工程學系「程式語言」課程學習輔助工具，用於 OurScheme 和 OurC
+          的可視化和執行追蹤。
         </p>
 
         <div class="button-group">
@@ -35,23 +36,6 @@
         </div>
       </q-card-section>
     </q-card>
-
-    <!-- <tmp> -->
-    <q-dialog v-model="annoucement">
-      <q-card class="bg-white text-black">
-        <q-toolbar class="bg-orange text-white">
-          <q-toolbar-title>網站公告</q-toolbar-title>
-        </q-toolbar>
-        <q-card-section class="row items-center">
-          <p>目前可視化系統正在進行後端遷移，功能暫時不可用，請稍後再訪問。</p>
-          <p>- ja-errorpro</p>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="關閉" color="secondary" @click="annoucement = false" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-    <!-- </tmp> -->
   </q-page>
 </template>
 
@@ -61,8 +45,6 @@ import { ref } from 'vue'
 
 const router = useRouter()
 const logoClickCount = ref(0)
-
-const annoucement = ref(true)
 
 const navigateToOurScheme = () => {
   router.push('/OurScheme')

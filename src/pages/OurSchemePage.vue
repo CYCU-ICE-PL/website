@@ -150,6 +150,9 @@
             </div>
           </q-card-section>
         </q-card>
+        <div class="text-grey-7 text-caption q-mt-sm">
+          提示: 如果 Output 開頭有奇怪的 Interpreter error，表示該測資可能未被考慮到。
+        </div>
       </div>
     </q-page>
   </WebSocketComponent>
@@ -175,6 +178,7 @@ const interactionLog = ref('') // 交互紀錄狀態
 const interpreterOptions = ['project1', 'project2', 'project3', 'project4']
 const sendlock = ref(false)
 const activeTab = ref('io') // 新增 tab 狀態
+const is_switching_project = ref(false) // 切換專案中，防止 handleDisconnected 重置狀態
 const pendingLines = ref([]) // 待處理的程式碼行
 const isReady = ref(true) // 是否準備好接收下一行
 const currentSendMessage = ref(null) // 儲存當前的 sendMessage 函數
@@ -183,8 +187,10 @@ const wsConnected = ref(false) // 新增 WebSocket 連線狀態
 const handleProjectChange = async (project, connect, disconnect, isConnected) => {
   if (currentProject.value === project) return
 
+  is_switching_project.value = true
+
   if (isConnected) {
-    await disconnect()
+    disconnect()
     // 等待斷開連接完成
     await new Promise((resolve) => setTimeout(resolve, 100))
   }
@@ -199,6 +205,8 @@ const handleProjectChange = async (project, connect, disconnect, isConnected) =>
   } else {
     connect(`OurScheme${project}`)
   }
+
+  is_switching_project.value = false
 }
 
 const sendCode = async (sendMessage) => {
@@ -316,19 +324,23 @@ const handleConnected = () => {
 const handleDisconnected = () => {
   sendlock.value = true
   unlockInterpreterType()
-  currentProject.value = ''
   isReady.value = false // 重置 ready 狀態
   pendingLines.value = [] // 清空待處理的行
   currentSendMessage.value = null // 重置 sendMessage
   wsConnected.value = false // 更新連線狀態
-  $q.notify({
-    type: 'warning',
-    message: '連線中斷',
-    timeout: 1200,
-    position: 'top',
-    progress: true,
-    icon: 'warning',
-  })
+
+  // 切換專案時不重置 currentProject 也不顯示中斷通知
+  if (!is_switching_project.value) {
+    currentProject.value = ''
+    $q.notify({
+      type: 'warning',
+      message: '連線中斷',
+      timeout: 1200,
+      position: 'top',
+      progress: true,
+      icon: 'warning',
+    })
+  }
 }
 
 const handleEnterKey = (event, sendMessage) => {

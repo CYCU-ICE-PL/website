@@ -151,7 +151,8 @@
           </q-card-section>
         </q-card>
         <div class="text-grey-7 text-caption q-mt-sm">
-          提示: 如果 Output 開頭有奇怪的 Interpreter error，表示該測資可能未被考慮到。
+          提示: 如果 Output 開頭有奇怪的 Interpreter error，表示該情況可能未被考慮到，不會出現在 PL
+          系統。
         </div>
       </div>
     </q-page>

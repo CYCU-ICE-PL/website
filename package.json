@@ -15,28 +15,31 @@
     "postinstall": "quasar prepare"
   },
   "dependencies": {
-    "@quasar/extras": "^1.16.4",
-    "axios": "^1.7.9",
+    "@quasar/extras": "^1.17.0",
+    "axios": "^1.13.6",
     "d3": "^7.9.0",
-    "quasar": "^2.16.0",
-    "socket.io-client": "^4.8.1",
-    "typescript": "~5.8.0",
-    "typescript-eslint": "^8.38.0",
-    "vue": "^3.4.18",
-    "vue-router": "^4.0.0"
+    "quasar": "^2.18.6",
+    "socket.io-client": "^4.8.3",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.56.1",
+    "vue": "^3.5.29",
+    "vue-router": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
-    "@quasar/app-vite": "^2.0.0",
+    "@quasar/app-vite": "^2.4.1",
     "@quasar/quasar-app-extension-typescript": "^1.0.2",
-    "@vue/eslint-config-prettier": "^10.1.0",
-    "autoprefixer": "^10.4.2",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "autoprefixer": "^10.4.27",
     "eslint": "^9.14.0",
     "eslint-plugin-vue": "^9.30.0",
     "globals": "^15.12.0",
-    "postcss": "^8.4.14",
-    "prettier": "^3.3.3",
-    "vite-plugin-checker": "^0.8.0"
+    "postcss": "^8.5.6",
+    "prettier": "^3.8.1",
+    "vite-plugin-checker": "^0.12.0"
+  },
+  "overrides": {
+    "serialize-javascript": "^7.0.3"
   },
   "engines": {
     "node": "^28 || ^26 || ^24 || ^22 || ^20 || ^18",

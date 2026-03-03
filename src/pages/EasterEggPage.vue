@@ -140,17 +140,17 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { getEasterPageQuote } from 'src/data/quotes'
 
 const randomQuote = ref('')
-const gameCanvas = ref(null)
+const gameCanvas = ref<HTMLCanvasElement | null>(null)
 const gameStarted = ref(false)
 const score = ref(0)
 const isPaused = ref(false)
 
 // 遊戲變數
-let ctx = null
-let snake = []
+let ctx: CanvasRenderingContext2D | null = null
+let snake: { x: number; y: number }[] = []
 let food = { x: 0, y: 0 }
 let direction = 'right'
-let gameLoop = null
+let gameLoop: ReturnType<typeof setInterval> | null = null
 let cellSize = 10
 let gameSpeed = 100
 
@@ -224,6 +224,8 @@ const initGame = () => {
 }
 
 const generateFood = () => {
+  if (!gameCanvas.value) return
+
   // 生成隨機食物位置，確保對齊網格
   food = {
     x: Math.floor(Math.random() * (gameCanvas.value.width / cellSize)) * cellSize,
@@ -274,6 +276,8 @@ const moveSnake = () => {
 const checkCollision = () => {
   const head = snake[0]
 
+  if (!gameCanvas.value) return
+
   // 檢查牆壁碰撞
   if (
     head.x < 0 ||
@@ -295,7 +299,7 @@ const checkCollision = () => {
 }
 
 const drawGame = () => {
-  if (!ctx) return
+  if (!ctx || !gameCanvas.value) return
 
   // 清除畫布
   ctx.fillStyle = '#f8f9fa'
@@ -338,6 +342,7 @@ const drawGame = () => {
 
   // 繪製蛇 - 使用漸變色和圓角
   snake.forEach((segment, index) => {
+    if (!ctx) return
     // 設定漸變色
     if (index === 0) {
       // 蛇頭 - 更亮的顏色
@@ -362,7 +367,14 @@ const drawGame = () => {
 }
 
 // 繪製圓角矩形的輔助函數
-function roundRect(ctx, x, y, width, height, radius) {
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+) {
   ctx.beginPath()
   ctx.moveTo(x + radius, y)
   ctx.lineTo(x + width - radius, y)
@@ -377,7 +389,7 @@ function roundRect(ctx, x, y, width, height, radius) {
   ctx.fill()
 }
 
-const handleKeyDown = (e) => {
+const handleKeyDown = (e: KeyboardEvent) => {
   if (!gameStarted.value || isPaused.value) return
 
   // 防止方向鍵滾動頁面
@@ -402,7 +414,10 @@ const handleKeyDown = (e) => {
 }
 
 const gameOver = () => {
-  clearInterval(gameLoop)
+  if (gameLoop) {
+    clearInterval(gameLoop)
+    gameLoop = null
+  }
   alert(`遊戲結束！你的得分是: ${score.value}`)
   gameStarted.value = false
 }

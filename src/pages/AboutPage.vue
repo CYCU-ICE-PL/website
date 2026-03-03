@@ -156,7 +156,7 @@
         </div>
 
         <div class="text-center q-mt-md">
-          <p class="text-subtitle1 text-grey">Created by: Joe Liao</p>
+          <p class="text-subtitle1 text-grey">Created by: Joe Liao | Maintained by: ja-errorpro</p>
         </div>
       </div>
     </div>
@@ -167,10 +167,32 @@
 import { ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 
+interface Contributor {
+  id: number
+  login: string
+  avatar_url: string
+  html_url: string
+  name: string
+  url: string
+}
+
+interface Commit {
+  sha: string
+  commit: {
+    message: string
+    author: {
+      date: string
+    }
+  }
+  author?: {
+    login: string
+  }
+}
+
 const $q = useQuasar()
 const starCount = ref(0)
-const contributors = ref([])
-const commits = ref([])
+const contributors = ref<Contributor[]>([])
+const commits = ref<Commit[]>([])
 const isLoading = ref({
   stars: false,
   contributors: false,

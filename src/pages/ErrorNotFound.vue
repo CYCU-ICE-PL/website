@@ -155,7 +155,7 @@ const fetchRandomMeme = async () => {
 }
 
 // 嘗試載入主圖片或備用預覽圖
-const tryLoadImage = (data) => {
+const tryLoadImage = (data: { url: string; preview: string[] }) => {
   const mainUrl = data.url
   const previewUrls = data.preview || []
 
@@ -195,7 +195,7 @@ const tryLoadImage = (data) => {
 }
 
 // 嘗試載入預覽圖片（從高解析度到低解析度）
-const tryPreviewImages = (previewUrls) => {
+const tryPreviewImages = (previewUrls: string[]) => {
   if (previewUrls.length === 0) {
     console.error('所有預覽圖都載入失敗')
     if (retryCount.value < maxRetries) {
@@ -210,6 +210,7 @@ const tryPreviewImages = (previewUrls) => {
   }
 
   const previewUrl = previewUrls.shift()
+  if (!previewUrl) return
   const imgPreview = new Image()
 
   imgPreview.onload = () => {

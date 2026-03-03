@@ -173,7 +173,7 @@ const navigateToHome = () => {
   router.push('/')
 }
 
-const showImagePreview = (image) => {
+const showImagePreview = (image: string) => {
   previewImage.value = image
   showPreview.value = true
 }

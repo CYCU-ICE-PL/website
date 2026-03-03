@@ -133,7 +133,7 @@
                 :disable="!wsConnected"
                 class="code-input"
                 label="請在此輸入程式碼"
-                @keydown.enter.prevent="(event) => handleEnterKey(event, sendMessage)"
+                @keydown.enter.prevent="handleEnterKey($event, sendMessage)"
               />
               <q-btn
                 color="green"
@@ -180,12 +180,17 @@ const interpreterOptions = ['project1', 'project2', 'project3', 'project4']
 const sendlock = ref(false)
 const activeTab = ref('io') // 新增 tab 狀態
 const is_switching_project = ref(false) // 切換專案中，防止 handleDisconnected 重置狀態
-const pendingLines = ref([]) // 待處理的程式碼行
+const pendingLines = ref<string[]>([]) // 待處理的程式碼行
 const isReady = ref(true) // 是否準備好接收下一行
-const currentSendMessage = ref(null) // 儲存當前的 sendMessage 函數
+const currentSendMessage = ref<((msg: string) => void) | null>(null) // 儲存當前的 sendMessage 函數
 const wsConnected = ref(false) // 新增 WebSocket 連線狀態
 
-const handleProjectChange = async (project, connect, disconnect, isConnected) => {
+const handleProjectChange = async (
+  project: string,
+  connect: (url: string) => void,
+  disconnect: () => void,
+  isConnected: boolean,
+) => {
   if (currentProject.value === project) return
 
   is_switching_project.value = true
@@ -210,7 +215,7 @@ const handleProjectChange = async (project, connect, disconnect, isConnected) =>
   is_switching_project.value = false
 }
 
-const sendCode = async (sendMessage) => {
+const sendCode = async (sendMessage: (msg: string) => void) => {
   if (!wsConnected.value || executing.value) return
 
   executing.value = true
@@ -258,11 +263,11 @@ const processNextLine = async () => {
   pendingLines.value.shift()
 }
 
-const updateInput = (newInput) => {
+const updateInput = (newInput: string) => {
   input.value = newInput
 }
 
-const updateOutput = (message) => {
+const updateOutput = (message: string) => {
   try {
     const parsedMessage = JSON.parse(message)
     if (parsedMessage.type === 'ready') {
@@ -344,10 +349,10 @@ const handleDisconnected = () => {
   }
 }
 
-const handleEnterKey = (event, sendMessage) => {
+const handleEnterKey = (event: KeyboardEvent, sendMessage: (msg: string) => void) => {
   if (event.shiftKey) {
     // 如果是 Shift + Enter，插入換行
-    const textarea = event.target
+    const textarea = event.target as HTMLTextAreaElement
     const start = textarea.selectionStart
     const end = textarea.selectionEnd
     code.value = code.value.substring(0, start) + '\n' + code.value.substring(end)

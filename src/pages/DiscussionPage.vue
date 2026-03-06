@@ -92,6 +92,10 @@ export default defineComponent({
   padding: 2rem 1rem;
 }
 
+body.body--dark .discussion-page {
+  background: transparent;
+}
+
 .page-header {
   text-align: center;
   padding: 3rem 0;
@@ -113,6 +117,11 @@ export default defineComponent({
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
+body.body--dark .discussion-container {
+  background: rgba(30, 30, 30, 0.95);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
 .discussion-link {
   text-decoration: none;
   color: inherit;
@@ -131,11 +140,20 @@ export default defineComponent({
   margin: 0 auto;
 }
 
+body.body--dark .discussion-card {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .discussion-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
   border-color: var(--q-primary);
   background: linear-gradient(to right, rgba(var(--q-primary), 0.05), white);
+}
+
+body.body--dark .discussion-card:hover {
+  background: linear-gradient(to right, rgba(var(--q-primary), 0.2), rgba(30, 30, 30, 0.95));
 }
 
 .discussion-card:hover .card-icon {

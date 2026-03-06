@@ -384,6 +384,11 @@ const navigateToValgrind = () => {
   backdrop-filter: blur(20px);
 }
 
+body.body--dark .about-card {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .about-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
@@ -395,8 +400,12 @@ const navigateToValgrind = () => {
   border-radius: 8px;
   transition: all 0.3s ease;
   background: linear-gradient(135deg, #8b9dc3 0%, #6b7b9c 100%);
-  color: white;
+  color: white !important;
   border: none;
+}
+
+body.body--dark .github-button {
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
 }
 
 .github-button:hover {
@@ -413,6 +422,13 @@ const navigateToValgrind = () => {
   border: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(20px);
+}
+
+body.body--dark .contributors-card,
+body.body--dark .commits-card,
+body.body--dark .tools-card {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .contributors-card:hover,
@@ -445,9 +461,18 @@ const navigateToValgrind = () => {
   background: rgba(255, 255, 255, 0.8);
 }
 
+body.body--dark .contributor-card {
+  background: rgba(40, 40, 40, 0.8);
+  color: #e2e8f0;
+}
+
 .contributor-card:hover {
   background-color: rgba(245, 245, 245, 0.9);
   transform: translateY(-2px);
+}
+
+body.body--dark .contributor-card:hover {
+  background-color: rgba(50, 50, 50, 0.9);
 }
 
 .commit-item {

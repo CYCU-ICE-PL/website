@@ -77,7 +77,7 @@
                 >
                   <q-tooltip>交互紀錄</q-tooltip>
                 </q-btn>
-                <q-btn icon="download" @click="exportFiles" class="toggle-btn">
+                <q-btn icon="download" color="grey" @click="exportFiles" class="toggle-btn">
                   <q-tooltip>匯出檔案</q-tooltip>
                 </q-btn>
               </q-btn-group>
@@ -471,6 +471,12 @@ const exportFiles = () => {
   transition: opacity 0.3s ease;
 }
 
+body.body--dark .code-editor-card,
+body.body--dark .interaction-card {
+  background: rgba(30, 30, 30, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .code-editor-card:hover::before,
 .interaction-card:hover::before {
   opacity: 1;
@@ -531,6 +537,11 @@ const exportFiles = () => {
   width: 100%;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
+}
+
+body.body--dark :deep(.q-btn-group) {
+  background: rgba(30, 30, 30, 0.95);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 :deep(.q-btn-group .q-btn) {
@@ -633,6 +644,10 @@ const exportFiles = () => {
   border-radius: 8px;
   transition: all 0.3s ease;
   padding: 1rem;
+}
+
+body.body--dark .code-input {
+  background: rgba(30, 30, 30, 0.95);
 }
 
 .send-btn {

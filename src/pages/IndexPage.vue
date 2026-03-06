@@ -123,6 +123,11 @@ const handleLogoClick = () => {
   transition: all 0.3s ease;
 }
 
+body.body--dark .welcome-card {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .welcome-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
@@ -145,6 +150,10 @@ const handleLogoClick = () => {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+body.body--dark .main-title {
+  color: #e2e8f0;
+}
+
 .description {
   font-size: 1.3rem;
   color: #4a5568;
@@ -152,6 +161,10 @@ const handleLogoClick = () => {
   margin-bottom: 3rem;
   animation: slideUp 1s ease-out;
   font-weight: 400;
+}
+
+body.body--dark .description {
+  color: #a0aec0;
 }
 
 .button-group {
@@ -185,6 +198,10 @@ const handleLogoClick = () => {
   background: linear-gradient(135deg, #b8c2cc 0%, #9ba5b0 100%);
   color: white;
   border: none;
+}
+
+body.body--dark .action-btn.secondary {
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
 }
 
 .action-btn:hover {

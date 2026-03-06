@@ -114,35 +114,49 @@ const steps = ref([
     description: '在 OurScheme 中，首先選擇你要測試的 Project。',
     icon: 'folder_open',
     images: ['steps/step1.png'],
-    tips: ['建議先從 project1 開始練習', '每個 project 都有不同的測試重點'],
   },
   {
     title: '步驟 2: 點擊 Project',
     description: '點擊連線 Project 按鈕，連線到選擇的 Project。',
     icon: 'link',
     images: ['steps/step2.png'],
-    tips: ['確保網路連線穩定', '如果連線失敗，可以嘗試重新整理頁面'],
   },
   {
     title: '步驟 3: 輸入程式碼',
     description: '在輸入框中輸入你要執行的程式碼。',
     icon: 'edit_note',
     images: ['steps/step3.png'],
-    tips: ['可以輸入單行也可以多行程式碼'],
   },
   {
     title: '步驟 4: 送出程式碼',
     description: '點擊送出按鈕，讓後端(直譯器)讀取你輸入的程式碼。',
     icon: 'send',
     images: ['steps/step4-1.png'],
-    tips: ['送出前請確認程式碼是否完整', "系統會自動 append '\\n'到你的程式碼中"],
   },
   {
     title: '步驟 5: 查看結果',
     description: '在輸入框與輸出框中檢查歷史輸入和執行結果。',
     icon: 'visibility',
     images: ['steps/step5-1.png'],
-    tips: ['可以查看歷史記錄了解執行過程', '如果結果不符合預期，可以檢查輸入的程式碼'],
+  },
+  {
+    title: '步驟 6: 小提醒',
+    description: '以下是使用時的一些小提示：',
+    icon: 'tips_and_updates',
+    tips: [
+      '建議先從 project1 開始練習',
+      '每個 project 都有不同的測試重點',
+      '確保網路連線穩定',
+      '如果連線失敗，可以嘗試重新整理頁面',
+      '可以輸入單行也可以多行程式碼',
+      '送出前請確認程式碼是否完整',
+      "系統會自動 append '\\n'到你的程式碼中",
+      '可以查看歷史記錄了解執行過程',
+      '如果結果不符合預期，可以檢查輸入的程式碼',
+      '送出的 Input 會自動在行尾加上換行符號。',
+      '測資答案皆由可視化系統程式產生',
+      '可視化系統無法測試 EOF Error',
+    ],
   },
 ])
 
@@ -194,11 +208,19 @@ const showImagePreview = (image: string) => {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+body.body--dark .title {
+  color: #e2e8f0;
+}
+
 .description {
   font-size: 1.25rem;
   margin: 1rem 0;
   color: #4a5568;
   line-height: 1.6;
+}
+
+body.body--dark .description {
+  color: #a0aec0;
 }
 
 .tutorial-stepper {
@@ -215,6 +237,11 @@ const showImagePreview = (image: string) => {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+body.body--dark .step-content {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .step-header {
@@ -235,11 +262,19 @@ const showImagePreview = (image: string) => {
   margin: 0;
 }
 
+body.body--dark .step-title {
+  color: #e2e8f0;
+}
+
 .step-description {
   font-size: 1.2rem;
   color: #4a5568;
   line-height: 1.8;
   margin-bottom: 2rem;
+}
+
+body.body--dark .step-description {
+  color: #a0aec0;
 }
 
 .step-images {
@@ -256,6 +291,16 @@ const showImagePreview = (image: string) => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
+  height: 250px;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.body--dark .image-container {
+  background-color: #1a1a1a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .image-container:hover {
@@ -264,8 +309,9 @@ const showImagePreview = (image: string) => {
 }
 
 .step-image {
-  width: 100%;
-  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
   display: block;
 }
 
@@ -297,6 +343,10 @@ const showImagePreview = (image: string) => {
   font-weight: 600;
 }
 
+body.body--dark .tips-header {
+  color: #e2e8f0;
+}
+
 .tips-list {
   list-style-type: none;
   padding: 0;
@@ -308,6 +358,10 @@ const showImagePreview = (image: string) => {
   color: #4a5568;
   display: flex;
   align-items: center;
+}
+
+body.body--dark .tips-list li {
+  color: #a0aec0;
 }
 
 .tips-list li:before {
@@ -347,12 +401,20 @@ const showImagePreview = (image: string) => {
   overflow: hidden;
 }
 
+body.body--dark .preview-card {
+  background: rgba(30, 30, 30, 0.98);
+}
+
 .preview-content {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
   background: #f8f9fa;
+}
+
+body.body--dark .preview-content {
+  background: #121212;
 }
 
 .preview-image {
@@ -377,12 +439,25 @@ const showImagePreview = (image: string) => {
   padding: 1rem;
 }
 
+body.body--dark :deep(.q-step) {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 :deep(.q-step__title) {
   color: #2c3e50;
   font-weight: 600;
 }
 
+body.body--dark :deep(.q-step__title) {
+  color: #e2e8f0;
+}
+
 :deep(.q-step__description) {
   color: #4a5568;
+}
+
+body.body--dark :deep(.q-step__description) {
+  color: #a0aec0;
 }
 </style>

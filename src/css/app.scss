@@ -11,6 +11,10 @@ body {
   color: #333;
 }
 
+body.body--dark {
+  color: #e2e8f0;
+}
+
 // 設定標題字體
 h1,
 h2,
@@ -32,7 +36,10 @@ p {
 button {
   font-family: 'Nunito', sans-serif;
   font-weight: 600;
-  transition: background-color 0.1s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  transition:
+    background-color 0.1s ease-in-out,
+    transform 0.1s ease-in-out,
+    box-shadow 0.1s ease-in-out;
   background: linear-gradient(to bottom, #f7f7f7, #e6e6e6);
   border: 1px solid #ccc;
   border-radius: 5px;

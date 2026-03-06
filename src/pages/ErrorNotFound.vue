@@ -277,6 +277,12 @@ onMounted(() => {
   transition: all 0.3s ease;
 }
 
+body.body--dark .error-card,
+body.body--dark .meme-card {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .error-card:hover,
 .meme-card:hover {
   transform: translateY(-4px);
@@ -290,6 +296,10 @@ onMounted(() => {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
   line-height: 1;
+}
+
+body.body--dark .error-code {
+  color: #e2e8f0;
 }
 
 .return-btn {
@@ -317,6 +327,10 @@ onMounted(() => {
   border-radius: 8px;
   overflow: hidden;
   position: relative;
+}
+
+body.body--dark .meme-container {
+  background: #1a1a1a;
 }
 
 .meme-loaded-container {

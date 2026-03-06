@@ -85,14 +85,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
+const $q = useQuasar()
 const router = useRouter()
 const drawer = ref(false)
 const currentPageTitle = ref('')
 const isPageTransitioning = ref(false)
-
-// 從 localStorage 載入主題，若無則預設為 'default'
-const currentMood = ref(localStorage.getItem('currentMood') || 'default')
 
 const moods = {
   default: {
@@ -127,17 +126,31 @@ const moods = {
     primaryColor: '#FFD700',
     secondaryColor: '#FFA500',
   },
-}
+  dark: {
+    name: '黑暗',
+    icon: 'dark_mode',
+    headerGradient: 'linear-gradient(135deg, #232526 0%, #414345 100%)',
+    backgroundGradient: 'linear-gradient(135deg, #121212 0%, #1a1a1a 100%)',
+    primaryColor: '#414345',
+    secondaryColor: '#232526',
+  },
+} as const
+
+type MoodKey = keyof typeof moods
+
+// 從 localStorage 載入主題，若無則預設為 'default'
+const currentMood = ref<MoodKey>((localStorage.getItem('currentMood') as MoodKey) || 'default')
 
 const toggleMood = () => {
   isPageTransitioning.value = true
-  const moodKeys = Object.keys(moods)
+  const moodKeys = Object.keys(moods) as MoodKey[]
   const currentIndex = moodKeys.indexOf(currentMood.value)
   const nextIndex = (currentIndex + 1) % moodKeys.length
   currentMood.value = moodKeys[nextIndex]
 
   // 儲存到 localStorage
   localStorage.setItem('currentMood', currentMood.value)
+  $q.dark.set(currentMood.value === 'dark')
 
   setTimeout(() => {
     isPageTransitioning.value = false
@@ -158,6 +171,8 @@ const goHome = () => {
 
 // 在組件掛載時發送 gtag 事件
 onMounted(() => {
+  $q.dark.set(currentMood.value === 'dark')
+
   currentPageTitle.value = String(router.currentRoute.value.name ?? '')
   window.gtag('event', 'page_view', {
     page_path: router.currentRoute.value.fullPath,
@@ -166,7 +181,7 @@ onMounted(() => {
 })
 
 // 使用 router.beforeEach 來監聽路由變更
-router.beforeEach((to, _, next) => {
+router.beforeEach((to, _from, next) => {
   currentPageTitle.value = String(to.name ?? '')
   window.gtag('event', 'page_view', {
     page_path: to.fullPath,
@@ -214,6 +229,11 @@ router.beforeEach((to, _, next) => {
   box-shadow: 4px 0 16px rgba(0, 0, 0, 0.05);
 }
 
+body.body--dark .drawer {
+  background: rgba(30, 30, 30, 0.95);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .drawer-list {
   padding: 1rem 0;
 }
@@ -225,10 +245,19 @@ router.beforeEach((to, _, next) => {
   color: #4a5568;
 }
 
+body.body--dark .drawer-item {
+  color: #e2e8f0;
+}
+
 .drawer-item:hover {
   background: rgba(139, 157, 195, 0.1);
   transform: translateX(5px);
   color: #2c3e50;
+}
+
+body.body--dark .drawer-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 .drawer-item.q-item--active {
@@ -259,9 +288,17 @@ router.beforeEach((to, _, next) => {
   color: #2c3e50;
 }
 
+body.body--dark .drawer-item:hover .q-icon {
+  color: white;
+}
+
 :deep(.q-separator) {
   background: rgba(139, 157, 195, 0.2);
   margin: 0.5rem 1rem;
+}
+
+body.body--dark :deep(.q-separator) {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .fade-enter-active,

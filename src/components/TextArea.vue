@@ -1,5 +1,5 @@
 <template>
-  <q-card>
+  <q-card class="bg-transparent">
     <q-card-section class="tight-card-section">
       <div class="text-subtitle1">{{ title }}</div>
       <q-input v-model="text" readonly filled autogrow type="textarea" ref="textInput" />
@@ -42,5 +42,9 @@ watch(
   font-weight: 500;
   color: rgba(0, 0, 0, 0.7);
   margin-bottom: 4px;
+}
+
+body.body--dark .text-subtitle1 {
+  color: rgba(255, 255, 255, 0.7);
 }
 </style>

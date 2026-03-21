@@ -268,30 +268,32 @@ const updateInput = (newInput: string) => {
 }
 
 const updateOutput = (message: string) => {
-  try {
-    const parsedMessage = JSON.parse(message)
-    if (parsedMessage.type === 'ready') {
-      isReady.value = true
-      if (pendingLines.value.length > 0) {
-        processNextLine()
-      } else {
-        executing.value = false
+  // 只有以 '{' 開頭的訊息才是 server 的控制訊息（ready / ack）
+  // 直譯器的純文字輸出（如 "20\n"、"9\n"）不以 '{' 開頭，直接顯示。
+  // 若先嘗試 JSON.parse，"20\n" 會被解析為數字 20，
+  // 導致 parsedMessage.type 為 undefined，輸出被靜默丟棄。
+  if (message.startsWith('{')) {
+    try {
+      const parsedMessage = JSON.parse(message)
+      if (parsedMessage.type === 'ready') {
         isReady.value = true
-      }
-      return
-    } else if (parsedMessage.type === 'ack') {
-      // 如果是空 payload 的 ack，忽略它
-      if (!parsedMessage.payload) {
+        if (pendingLines.value.length > 0) {
+          processNextLine()
+        } else {
+          executing.value = false
+          isReady.value = true
+        }
+        return
+      } else if (parsedMessage.type === 'ack') {
+        // 所有 ack 訊息忽略，讓 ready 訊息來處理狀態
         return
       }
-      // 其他 ack 訊息也忽略，讓 ready 訊息來處理狀態
-      return
+    } catch {
+      // JSON 解析失敗，視為一般輸出
     }
-  } catch {
-    // 如果不是 JSON 格式，則為一般輸出
-    output.value += message
-    interactionLog.value += `${message}`
   }
+  output.value += message
+  interactionLog.value += `${message}`
 }
 
 const lockInterpreterType = () => {

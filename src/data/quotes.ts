@@ -214,6 +214,7 @@ const specialQuotes = [ // 特別名言
     "“我不能給她一個家, 但我鐘可以一直加” - 業昌（ 110級 ）",
     "“我是羅傑的寶寶 你是羅傑的貝貝 我們合在一起就是寶貝” - 詰詠（ 110級 ）",
     "“大一上有修過計概就可以修PL，推薦大家來修” - Allen（ 114級 ）",
+    "AI can solve Project 4 in 2 days without humans. - CompileErr0r（ 111級 ）"
 
 ];
 

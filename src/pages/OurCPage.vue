@@ -10,7 +10,7 @@
         <!-- 頂部控制區域 -->
         <div class="control-section q-mb-md">
           <div class="row items-center q-col-gutter-md">
-            <div class="col">
+            <div class="col-12 col-sm">
               <q-btn-group v-if="!$q.screen.lt.sm" push spread>
                 <q-btn
                   v-for="option in interpreterOptions"
@@ -59,8 +59,8 @@
                 </q-list>
               </q-btn-dropdown>
             </div>
-            <div class="col-auto">
-              <q-btn-group flat>
+            <div class="col-12 col-sm-auto">
+              <q-btn-group flat class="toolbar-btn-group">
                 <q-btn
                   :color="activeTab === 'io' ? 'primary' : 'grey'"
                   icon="input"
@@ -71,11 +71,35 @@
                 </q-btn>
                 <q-btn
                   :color="activeTab === 'interaction' ? 'primary' : 'grey'"
-                  icon="history"
+                  icon="receipt_long"
                   @click="activeTab = 'interaction'"
                   class="toggle-btn"
                 >
                   <q-tooltip>交互紀錄</q-tooltip>
+                </q-btn>
+                <q-btn
+                  :color="activeTab === 'diff' ? 'primary' : 'grey'"
+                  icon="compare_arrows"
+                  @click="activeTab = 'diff'"
+                  class="toggle-btn"
+                >
+                  <q-tooltip>輸出比對</q-tooltip>
+                </q-btn>
+                <q-btn
+                  icon="history"
+                  color="grey"
+                  @click="historyOpen = true"
+                  class="toggle-btn"
+                >
+                  <q-tooltip>歷史紀錄</q-tooltip>
+                  <q-badge
+                    v-if="history.entries.value.length > 0"
+                    color="primary"
+                    floating
+                    rounded
+                  >
+                    {{ history.entries.value.length }}
+                  </q-badge>
                 </q-btn>
                 <q-btn icon="download" color="grey" @click="exportFiles" class="toggle-btn">
                   <q-tooltip>匯出檔案</q-tooltip>
@@ -91,12 +115,12 @@
           <q-tab-panel name="io">
             <div class="row q-col-gutter-md">
               <!-- 輸入區域 -->
-              <div class="col-6">
+              <div class="col-12 col-sm-6">
                 <TextArea :initialText="input" :title="inputTitle" @update:text="updateInput" />
               </div>
 
               <!-- 輸出區域 -->
-              <div class="col-6">
+              <div class="col-12 col-sm-6">
                 <TextArea :initialText="output" :title="outputTitle" readonly />
               </div>
             </div>
@@ -114,6 +138,11 @@
               </q-card-section>
             </q-card>
           </q-tab-panel>
+
+          <!-- 輸出比對面板 -->
+          <q-tab-panel name="diff">
+            <DiffViewer :expected="output" />
+          </q-tab-panel>
         </q-tab-panels>
 
         <!-- 程式碼編輯區域 -->
@@ -121,26 +150,24 @@
           <q-card-section class="code-editor-section">
             <div class="text-caption text-grey-7 q-mb-sm">
               <q-icon name="keyboard" size="xs" class="q-mr-xs" />
-              Enter 送出程式碼 | Shift + Enter 插入換行
+              Enter 送出程式碼 | Shift + Enter 插入換行 | Ctrl/Cmd + Z 復原
             </div>
             <div class="code-input-container">
-              <q-input
-                filled
+              <CodeEditor
                 v-model="code"
-                type="textarea"
-                autogrow
-                :spellcheck="false"
-                :disable="!wsConnected"
+                language="c"
+                :disabled="!wsConnected"
+                placeholder="請在此輸入 OurC 程式碼"
+                min-height="180px"
                 class="code-input"
-                label="請在此輸入程式碼"
-                @keydown.enter.prevent="handleEnterKey($event, sendMessage)"
+                @submit="onEditorSubmit(sendMessage)"
               />
               <q-btn
                 color="green"
                 icon="send"
                 class="send-btn"
                 :disable="!wsConnected || executing"
-                @click="() => sendCode(sendMessage)"
+                @click="() => onEditorSubmit(sendMessage)"
               >
                 <q-tooltip>送出程式碼</q-tooltip>
                 <template v-if="executing">
@@ -155,17 +182,32 @@
           系統。
         </div>
       </div>
+
+      <HistoryPanel
+        v-model="historyOpen"
+        :entries="history.entries.value"
+        @load="onHistoryLoad"
+        @remove="history.remove"
+        @rename="history.rename"
+        @clear="history.clear"
+      />
     </q-page>
   </WebSocketComponent>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import TextArea from 'components/TextArea.vue'
 import WebSocketComponent from 'components/WebsocketComponent.vue'
+import CodeEditor from 'components/CodeEditor.vue'
+import HistoryPanel from 'components/HistoryPanel.vue'
+import DiffViewer from 'components/DiffViewer.vue'
+import { useHistory, type HistoryEntry } from 'src/composables/useHistory'
 
 const $q = useQuasar()
+const history = useHistory('c')
+const historyOpen = ref(false)
 
 const code = ref('')
 const output = ref('')
@@ -212,6 +254,12 @@ const handleProjectChange = async (
 const sendCode = async (sendMessage: (msg: string) => void) => {
   if (!wsConnected.value || executing.value) return
 
+  history.add({
+    code: code.value,
+    project: currentProject.value || 'unknown',
+    language: 'c',
+  })
+
   executing.value = true
   isReady.value = true // 確保初始狀態是 ready
   currentSendMessage.value = sendMessage
@@ -222,6 +270,21 @@ const sendCode = async (sendMessage: (msg: string) => void) => {
   if (isReady.value) {
     await processNextLine()
   }
+}
+
+const onEditorSubmit = (sendMessage: (msg: string) => void) => {
+  if (!wsConnected.value || executing.value) return
+  void sendCode(sendMessage)
+}
+
+const onHistoryLoad = (entry: HistoryEntry) => {
+  code.value = entry.code
+  $q.notify({
+    type: 'info',
+    message: '已載入歷史紀錄',
+    timeout: 1000,
+    position: 'top',
+  })
 }
 
 const processNextLine = async () => {
@@ -339,29 +402,6 @@ const handleDisconnected = () => {
       progress: true,
       icon: 'warning',
     })
-  }
-}
-
-const handleEnterKey = (event: KeyboardEvent, sendMessage: (msg: string) => void) => {
-  if (event.shiftKey) {
-    // 如果是 Shift + Enter，插入換行
-    const textarea = event.target as HTMLTextAreaElement
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    code.value = code.value.substring(0, start) + '\n' + code.value.substring(end)
-
-    // 將游標移到新行的開始位置
-    nextTick(() => {
-      textarea.selectionStart = textarea.selectionEnd = start + 1
-    })
-  } else {
-    // 如果是單純的 Enter，送出程式碼
-    if (!wsConnected.value || executing.value) return
-    if (typeof sendMessage === 'function') {
-      sendCode(sendMessage)
-    } else {
-      console.error('sendMessage is not available')
-    }
   }
 }
 

@@ -110,7 +110,7 @@
         </div>
 
         <!-- Tab 內容區域 -->
-        <q-tab-panels v-model="activeTab" animated>
+        <q-tab-panels v-model="activeTab" animated keep-alive>
           <!-- Input & Output 面板 -->
           <q-tab-panel name="io">
             <div class="row q-col-gutter-md">

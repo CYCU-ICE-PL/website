@@ -1,5 +1,17 @@
 <template>
-  <q-card class="diff-card">
+  <q-card
+    class="diff-card"
+    :class="{ 'diff-card--dragging': isDragging }"
+    @dragenter.prevent="onDragEnter"
+    @dragover.prevent="onDragOver"
+    @dragleave.prevent="onDragLeave"
+    @drop.prevent="onDrop"
+  >
+    <div v-if="isDragging" class="drop-overlay">
+      <q-icon name="cloud_upload" size="64px" />
+      <div class="text-h6 q-mt-sm">放開以載入你的輸出檔案</div>
+      <div class="text-caption q-mt-xs">支援 .out / .txt / .log</div>
+    </div>
     <q-card-section>
       <div class="diff-header q-mb-md">
         <div class="text-h6 diff-title">
@@ -9,13 +21,17 @@
         </div>
         <div class="diff-actions">
           <q-btn
-            flat
-            dense
+            unelevated
             no-caps
+            color="primary"
             icon="upload_file"
-            label="載入你的輸出"
+            :label="userOutput ? '更換你的輸出' : '載入你的輸出'"
+            class="upload-btn"
+            :class="{ 'upload-btn--pulse': !userOutput }"
             @click="triggerUpload"
-          />
+          >
+            <q-tooltip>點擊選檔，或直接把檔案拖到此卡片</q-tooltip>
+          </q-btn>
           <input
             ref="fileInput"
             type="file"
@@ -51,11 +67,12 @@
         </div>
       </div>
 
-      <div v-if="!userOutput" class="empty-hint">
-        <q-icon name="description" size="48px" class="empty-icon" />
-        <div class="text-subtitle2 q-mt-sm">尚未上傳你的輸出</div>
+      <div v-if="!userOutput" class="empty-hint" @click="triggerUpload">
+        <q-icon name="cloud_upload" size="56px" class="empty-icon" />
+        <div class="text-subtitle1 q-mt-sm text-weight-medium">尚未上傳你的輸出</div>
         <div class="text-caption text-grey-7 q-mt-xs">
-          點擊「載入你的輸出」上傳你的直譯器產生的 <code>.out</code> 檔案，
+          點擊上方「載入你的輸出」按鈕、點此區塊、或將檔案直接拖曳到這裡，
+          上傳你的直譯器產生的 <code>.out</code> 檔案，
           與此頁面的 PL 系統輸出（期望輸出）逐行比對。
         </div>
       </div>
@@ -150,16 +167,16 @@ const userOutput = ref<string>('')
 const userFileName = ref<string>('')
 const viewMode = ref<'split' | 'unified'>('split')
 const fileInput = ref<HTMLInputElement | null>(null)
+const isDragging = ref(false)
+// dragenter/dragleave fire for every nested child element. Counting enter/leave events
+// is the standard trick to know when the cursor has truly left the container.
+let dragDepth = 0
 
 const triggerUpload = () => fileInput.value?.click()
 
-const onFileChange = async (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (!file) return
+const loadFile = async (file: File) => {
   if (file.size > 5 * 1024 * 1024) {
     $q.notify({ type: 'negative', message: '檔案過大 (>5MB)', timeout: 1500, position: 'top' })
-    target.value = ''
     return
   }
   try {
@@ -177,9 +194,41 @@ const onFileChange = async (event: Event) => {
     })
   } catch {
     $q.notify({ type: 'negative', message: '讀取檔案失敗', timeout: 1500, position: 'top' })
-  } finally {
-    target.value = ''
   }
+}
+
+const onFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) await loadFile(file)
+  target.value = ''
+}
+
+const hasFiles = (e: DragEvent) =>
+  Array.from(e.dataTransfer?.types ?? []).includes('Files')
+
+const onDragEnter = (e: DragEvent) => {
+  if (!hasFiles(e)) return
+  dragDepth++
+  isDragging.value = true
+}
+
+const onDragOver = (e: DragEvent) => {
+  if (!hasFiles(e)) return
+  if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy'
+}
+
+const onDragLeave = (e: DragEvent) => {
+  if (!hasFiles(e)) return
+  dragDepth = Math.max(0, dragDepth - 1)
+  if (dragDepth === 0) isDragging.value = false
+}
+
+const onDrop = async (e: DragEvent) => {
+  dragDepth = 0
+  isDragging.value = false
+  const file = e.dataTransfer?.files?.[0]
+  if (file) await loadFile(file)
 }
 
 const clearUserOutput = () => {
@@ -346,11 +395,74 @@ const markerOf = (kind: UnifiedLine['kind']) =>
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+  transition:
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
 }
 
 body.body--dark .diff-card {
   background: rgba(30, 30, 30, 0.98);
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+.diff-card--dragging {
+  border-color: var(--q-primary, #1976d2);
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.18), 0 12px 36px rgba(25, 118, 210, 0.2);
+}
+
+.drop-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(25, 118, 210, 0.08);
+  backdrop-filter: blur(2px);
+  border: 2px dashed var(--q-primary, #1976d2);
+  border-radius: 16px;
+  color: var(--q-primary, #1976d2);
+  pointer-events: none;
+  animation: dropPulse 1.2s ease-in-out infinite;
+}
+
+body.body--dark .drop-overlay {
+  background: rgba(25, 118, 210, 0.18);
+}
+
+@keyframes dropPulse {
+  0%, 100% { opacity: 0.92; }
+  50% { opacity: 1; }
+}
+
+.upload-btn {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 4px 14px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.upload-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
+}
+
+.upload-btn--pulse {
+  animation: uploadPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes uploadPulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3), 0 0 0 0 rgba(25, 118, 210, 0.45);
+  }
+  50% {
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3), 0 0 0 8px rgba(25, 118, 210, 0);
+  }
 }
 
 .empty-hint {
@@ -361,14 +473,36 @@ body.body--dark .diff-card {
   padding: 48px 20px;
   text-align: center;
   color: rgba(0, 0, 0, 0.55);
+  border: 2px dashed rgba(25, 118, 210, 0.35);
+  border-radius: 12px;
+  background: rgba(25, 118, 210, 0.04);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.empty-hint:hover {
+  background: rgba(25, 118, 210, 0.08);
+  border-color: rgba(25, 118, 210, 0.6);
+}
+
+.empty-hint:active {
+  transform: scale(0.995);
 }
 
 body.body--dark .empty-hint {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(25, 118, 210, 0.08);
+  border-color: rgba(120, 170, 230, 0.35);
+}
+
+body.body--dark .empty-hint:hover {
+  background: rgba(25, 118, 210, 0.14);
+  border-color: rgba(120, 170, 230, 0.6);
 }
 
 .empty-icon {
-  opacity: 0.4;
+  opacity: 0.55;
+  color: var(--q-primary, #1976d2);
 }
 
 .empty-hint code {

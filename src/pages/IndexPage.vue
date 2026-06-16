@@ -20,7 +20,11 @@
           </q-btn>
           <q-btn class="action-btn primary" @click="navigateToVisualize">
             <q-icon name="visibility" class="btn-icon" />
-            可視化
+            OurScheme 可視化
+          </q-btn>
+          <q-btn class="action-btn primary" @click="navigateToVisualizeOurC">
+            <q-icon name="visibility" class="btn-icon" />
+            OurC 可視化
           </q-btn>
         </div>
 
@@ -56,6 +60,10 @@ const navigateToOurC = () => {
 
 const navigateToVisualize = () => {
   router.push('/Visualize')
+}
+
+const navigateToVisualizeOurC = () => {
+  router.push('/Visualize_OurC')
 }
 
 const navigateToTutorial = () => {
@@ -169,6 +177,7 @@ body.body--dark .description {
 
 .button-group {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 1.5rem;
   margin-bottom: 2rem;
@@ -176,16 +185,21 @@ body.body--dark .description {
 }
 
 .action-btn {
+  min-width: 180px;
   padding: 1rem 2rem;
   font-size: 1.2rem;
   border-radius: 16px;
   text-transform: none;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.5px;
+}
+
+/* Quasar 將按鈕內容包在 .q-btn__content，需用 :deep 才能對齊 icon 與文字 */
+.action-btn :deep(.q-btn__content) {
+  flex-wrap: nowrap;
+  gap: 0.6rem;
+  white-space: nowrap;
 }
 
 .action-btn.primary {

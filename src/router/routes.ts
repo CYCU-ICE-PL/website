@@ -10,6 +10,7 @@ const routes = [
       { path: 'Tutorial', name: 'Tutorial', component: () => import('pages/TutorialPage.vue') },
       { path: 'About', name: 'About', component: () => import('pages/AboutPage.vue') },
       { path: 'Visualize', name: 'Visualize', component: () => import('pages/VisualizePage.vue') },
+      { path: 'Visualize_OurC', name: 'Visualize_OurC', component: () => import('pages/OurCVisualizePage.vue') },
       { path: 'Discussion', name: 'Discussion', component: () => import('pages/DiscussionPage.vue') },
       { path: 'cycu-ice-secret', name: 'EasterEgg', component: () => import('pages/EasterEggPage.vue') },
     ]

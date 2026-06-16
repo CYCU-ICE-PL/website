@@ -43,17 +43,23 @@
             </q-item-section>
             <q-item-section>OurScheme</q-item-section>
           </q-item>
+          <q-item to="/Visualize" clickable class="drawer-item">
+            <q-item-section avatar>
+              <q-icon name="visibility" />
+            </q-item-section>
+            <q-item-section>OurScheme AST 可視化</q-item-section>
+          </q-item>
           <q-item to="/OurC" clickable class="drawer-item">
             <q-item-section avatar>
               <q-icon name="code" />
             </q-item-section>
             <q-item-section>OurC</q-item-section>
           </q-item>
-          <q-item to="/Visualize" clickable class="drawer-item">
+          <q-item to="/Visualize_OurC" clickable class="drawer-item">
             <q-item-section avatar>
               <q-icon name="visibility" />
             </q-item-section>
-            <q-item-section>可視化</q-item-section>
+            <q-item-section>OurC AST 可視化</q-item-section>
           </q-item>
           <q-separator />
           <q-item to="/Tutorial" clickable class="drawer-item">

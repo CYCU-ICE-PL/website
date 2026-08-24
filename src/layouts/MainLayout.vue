@@ -13,6 +13,7 @@
             <span :key="currentPageTitle">{{ currentPageTitle }}</span>
           </transition>
         </q-toolbar-title>
+        <BackendStatusIndicator />
         <q-btn flat round :icon="moods[currentMood].icon" @click="toggleMood" class="mood-btn">
           <q-tooltip anchor="bottom right" self="top middle">
             切換心情：{{ moods[currentMood].name }}
@@ -92,6 +93,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
+import BackendStatusIndicator from 'components/BackendStatusIndicator.vue'
 
 const $q = useQuasar()
 const router = useRouter()

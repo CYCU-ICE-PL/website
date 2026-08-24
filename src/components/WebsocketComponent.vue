@@ -12,6 +12,7 @@
 
 <script setup lang="ts">
 import { ref, onUnmounted, nextTick } from 'vue'
+import { INTERPRETER_WS_URL } from 'src/config/services'
 
 const emit = defineEmits(['message', 'connected', 'disconnected'])
 
@@ -54,8 +55,7 @@ const connect = async (interpreterType: string) => {
 
   connecting.value = true
   await nextTick()
-  const wsUrl = `wss://pl-tmp.ja-errorpro.codes/`
-  socket = new WebSocket(wsUrl)
+  socket = new WebSocket(INTERPRETER_WS_URL)
 
   const timeoutId = setTimeout(() => {
     if (generation !== connection_generation) return

@@ -486,6 +486,10 @@ body.body--dark .contributor-card:hover {
   background-color: rgba(245, 245, 245, 0.9);
 }
 
+body.body--dark .commit-item:hover {
+  background-color: rgba(50, 50, 50, 0.9);
+}
+
 a {
   text-decoration: none;
   transition: color 0.3s ease;
